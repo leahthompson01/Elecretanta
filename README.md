@@ -1,6 +1,8 @@
 # Elecretanta
 
-# Install PHP, Composer, and Laravel
+# Setup application
+
+## Install PHP, Composer, and Laravel
 
 If you don't already have PHP, Composer, and Laravel, use one of the following commands:
 
@@ -53,4 +55,59 @@ C: > Users > yourUsernameHere > .config -> herd-lite -> bin -> php.ini, set the 
 
 ```sh
 php artisan serve
+```
+
+# Add page to frontend UI
+
+In `resources/js/Pages`, create your `jsx` page. Make sure to contain it in the `Authenticated` or `Guest` layout component.
+
+```
+import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout";
+import { Head } from "@inertiajs/react";
+
+export default function Show() {
+    return (
+        <AuthenticatedLayout
+            header={
+                <h2 className="text-xl font-semibold leading-tight text-gray-800 dark:text-gray-200">
+                    User
+                </h2>
+            }
+        >
+            <Head title="Show" />
+        </AuthenticatedLayout>
+    );
+}
+```
+
+In `routes/web.php`, add the endpoint for your route along with the other logic. If your file is located in a sub-folder inside of `resources/js/Pages`, make sure to include that sub-folder.
+
+```
+Route::get('/profile', function () {
+    return Inertia::render('Profile/Show');
+})->middleware(['auth', 'verified'])->name('profile');
+```
+
+To add the link to the Layout, you'll need to have the correct link for the route.
+
+```
+<Dropdown.Link
+  href={route('profile.show')}
+>
+  Profile
+</Dropdown.Link>
+```
+
+But in order for the Laravel app see your added route, you'll need to update your `web.php` file.
+
+```
+Route::get('/profile', function () {
+    return Inertia::render('Profile/Show');
+})->middleware(['auth', 'verified'])->name('profile.show');
+```
+
+To see the changes in your frontend, you need to update the build.
+
+```
+npm run build
 ```
