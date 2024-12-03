@@ -1,4 +1,6 @@
 # Elecretanta
+- [Setup Application](#setup-application)
+- [Add page to frontend UI](#add-page-to-frontend-ui)
 
 # Setup application
 
