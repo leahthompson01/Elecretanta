@@ -9,9 +9,7 @@ class Hobby extends Model
 {
     /** @use HasFactory<\Database\Factories\HobbyFactory> */
     use HasFactory;
-    protected $fillable = [
-        'name'
-    ];
+    protected $fillable = ['name'];
 
     protected $keyType = 'string';
     protected $primaryKey = 'name';
