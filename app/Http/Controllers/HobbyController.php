@@ -37,5 +37,10 @@ class HobbyController extends Controller
         ], 500);
     }
 }
+    public function fetchAllHobbies(Request $request)
+    {
+        $hobbies = Hobby::all();
+        return response()->json($hobbies,200);
+    }
        
 }
