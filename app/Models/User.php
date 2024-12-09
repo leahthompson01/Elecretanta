@@ -21,7 +21,8 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
-        'age'
+        'age',
+        'hobbies'
     ];
 
     /**
@@ -33,6 +34,11 @@ class User extends Authenticatable
         'password',
         'remember_token',
     ];
+
+    public function hobbies()
+    {
+        return $this->belongsToMany(Hobby::class);
+    }
 
     /**
      * Get the attributes that should be cast.
