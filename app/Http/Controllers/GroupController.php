@@ -2,8 +2,6 @@
 
 namespace App\Http\Controllers;
 use App\Models\ExchangeGroup;
-use App\Models\Group;
-use App\Models\User;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Http\Request;
 use Carbon\Carbon;
@@ -21,13 +19,9 @@ class GroupController extends Controller
 
         $exchangeDate = Carbon::create($year, $month, $day, $hour);
 
-        echo $exchangeDate, $request->name;
-
         $createGroup = ExchangeGroup::create(['name' => $request->name, "budget" => $request -> budget, "exchangeDate" => $exchangeDate]);
 
         $createGroup -> save();
-
-        echo $createGroup;
 
         return response()->json(["data" => $createGroup, "message" => "Group was successfully created"]);
 
@@ -48,13 +42,4 @@ class GroupController extends Controller
             return response()->json(["message"=> $e]);
     }
     }
-    // public function addGroupMember(Request $request)
-    // {
-    //     try{
-    //         $group = ExchangeGroup::findOrFail($request->id);
-    //         return response()->json($group);
-    //     } catch (\Exception $e) {
-    //         Log::error($e->getMessage());
-    //         return response()->json(["message"=> $e]);
-    // }
 }

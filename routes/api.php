@@ -1,4 +1,5 @@
 <?php
+use App\Http\Controllers\MembershipsController;
 use App\Http\Controllers\User\UserInfoController;
 use App\Http\Controllers\HobbyController;
 use App\Http\Controllers\RolesController;
@@ -22,3 +23,5 @@ Route::post("/group", [GroupController::class,"createGroup"])->name("group");
 Route::get("/group", [GroupController::class,"groupById"])->name("group");
 
 Route::post("/group/addMember", [GroupController::class,"addMember"])->name("group");
+
+Route::post("/memberships/add", [MembershipsController::class,"addMembership"])->name("memberships");
