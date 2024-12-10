@@ -53,7 +53,11 @@ DB_PASSWORD=
 
 C: > Users > yourUsernameHere > .config -> herd-lite -> bin -> php.ini, set the value for `variables_order` to `GPCS`
 
-## Run the following command:
+## Run the following commands:
+
+```sh
+npm run dev
+```
 
 ```sh
 php artisan migrate
