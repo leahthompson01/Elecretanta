@@ -4,6 +4,7 @@ use App\Http\Controllers\User\UserInfoController;
 use App\Http\Controllers\HobbyController;
 use App\Http\Controllers\RolesController;
 use App\Http\Controllers\GroupController;
+use App\Http\Controllers\WebscrapperController;
 use App\Models\Roles;
 use Illuminate\Support\Facades\Route;
 
@@ -25,3 +26,5 @@ Route::get("/group", [GroupController::class,"groupById"])->name("group");
 Route::post("/group/addMember", [GroupController::class,"addMember"])->name("group");
 
 Route::post("/memberships/add", [MembershipsController::class,"addMembership"])->name("memberships");
+
+Route::get("/webscrapper", [WebscrapperController::class, "scrape"] ) ->name("webscrapper");
