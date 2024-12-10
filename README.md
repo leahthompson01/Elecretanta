@@ -29,15 +29,17 @@ Set-ExecutionPolicy Bypass -Scope Process -Force; [System.Net.ServicePointManage
 
 ## Install PHP packages and npm dependencies
 
+1. 
 ```sh
 composer i
 ```
 
+2.
 ```sh
 npm i
 ```
 
-## Update your .env
+3. ## Update your .env
 Copy the values from .env.example and update the appropriate values
 
 ```sh
@@ -55,16 +57,19 @@ C: > Users > yourUsernameHere > .config -> herd-lite -> bin -> php.ini, set the 
 
 ## Run the following commands:
 
+4. In another terminal:
 ```sh
 npm run dev
 ```
 
+5.
 ```sh
 php artisan migrate
 ```
 
 ## Run the app locally
 
+6.
 ```sh
 php artisan serve
 ```
