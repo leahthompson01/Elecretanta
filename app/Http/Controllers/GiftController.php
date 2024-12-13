@@ -9,15 +9,23 @@ use Inertia\Inertia;
 use Inertia\Response;
 
 class GiftController extends Controller
-{
+{   
+    public function index(Request $request) : Response
+    {
+        $gifts = GiftExchange::where('user_id',$request->user()->id)->get();
+
+        return Inertia::render('/giftExchange', [
+           'gifts' => $gifts
+        ]);
+    }
+
     public function store(Request $request) : RedirectResponse
     {
-        $priorities = 'low'| 'medium' | 'high';
-        $validated = $request->validate([
-            'user_id' => 'required','string','max:50',
+        $validated = $request->input([
             'gifts' => 'required','array','max:500',
         ]);
-        Todo::create(['id' => $request->user()->id, 'user_id' => $request->user_id, 'gifts' => $request->gifts]);
-        return redirect()->route('todos.index');
+
+        GiftExchange::create(['user_id' => $request->user_id, 'gifts' => $validated['gifts']]);
+        return redirect()->route('giftExchange.index');
     }
 }
