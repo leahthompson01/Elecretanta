@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\SantaGroupController;
+use App\Http\Controllers\GiftController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -13,6 +14,12 @@ Route::get('/', function () {
         'laravelVersion' => Application::VERSION,
         'phpVersion' => PHP_VERSION,
     ]);
+});
+
+//buy gift exchange
+
+Route::middleware('auth')->group(function () {
+    Route::post('/giftExchange', [GiftController::class, 'store'])->name('giftExchange.store');
 });
 
 Route::get('/dashboard', function () {
