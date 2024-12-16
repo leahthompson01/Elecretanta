@@ -20,7 +20,7 @@ Route::get('/dashboard', function () {
 })->middleware(['auth', 'verified'])->name('dashboard');
 
 Route::middleware('auth')->group(function () {
-    Route::post('/setBudget', [GroupController::class, 'store'])->name('giftExchange.store');
+    Route::post('/setBudget', [SantaGroupController::class, 'store'])->name('giftExchange.store');
 });
 
 Route::middleware('auth')->group(function () {

@@ -21,7 +21,7 @@ class SantaGroupController extends Controller
 
     public function store(Request $request) : RedirectResponse
     {
-        $validated = $request->input([
+        $validated = $request->validate([
             'budget' => 'required','number','max:500',
             'members' => 'required', 'array', 'max: 500'
         ]);
