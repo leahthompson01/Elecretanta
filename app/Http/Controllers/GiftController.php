@@ -21,7 +21,7 @@ class GiftController extends Controller
 
     public function store(Request $request) : RedirectResponse
     {
-        $validated = $request->input([
+        $validated = $request->validate([
             'gifts' => 'required','array','max:500',
         ]);
 
