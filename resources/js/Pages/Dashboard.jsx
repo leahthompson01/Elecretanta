@@ -1,5 +1,6 @@
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import { Head } from '@inertiajs/react';
+import SecondaryButton from '@/Components/SecondaryButton';
 
 export default function Dashboard() {
     return (
@@ -12,6 +13,9 @@ export default function Dashboard() {
         >
             <Head title="Dashboard" />
 
+            <SecondaryButton className="ms-4">
+            Test
+            </SecondaryButton>
             <div className="py-12">
                 <div className="mx-auto max-w-7xl sm:px-6 lg:px-8">
                     <div className="overflow-hidden bg-white shadow-sm sm:rounded-lg dark:bg-gray-800">
