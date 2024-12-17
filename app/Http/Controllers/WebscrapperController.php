@@ -35,8 +35,9 @@ class WebscrapperController extends Controller
                 // Initiate Dom Crawler from Sympony
                 $crawler = new Crawler($body);
                 $traversableItems = new ArrayObject();
+                $itemPrice = 0;
                 // Fetch all anchor tags on page
-                $links = $crawler->filter('a')->each(function (Crawler $node) use ($traversableItems) {
+                $crawler->filter('a')->each(function (Crawler $node) use ($traversableItems) {
                     $href = $node->attr("href");
                     $substring = 'track';
                     $itemName = $node->text();
@@ -64,8 +65,8 @@ class WebscrapperController extends Controller
                 });
 
                 
-
-                $links = $crawler->filter('img')->each(function (Crawler $node, $index) use ($traversableItems) {
+                // get all images
+                $crawler->filter('img')->each(function (Crawler $node, $index) use ($traversableItems) {
                    
                     $imageUrl = $node->attr("src");
                     $substring = 'href';
@@ -80,11 +81,27 @@ class WebscrapperController extends Controller
                     };
  
                  });
- 
+                // get all prices
+                $itemPriceArray = [];
+                 $crawler->filter('div > span')->each(function (Crawler $node, $i) use ($traversableItems) {
+                    $itemPrice = $node->text();
+                    $pricesArray = new ArrayObject();
+                    if(str_contains($itemPrice, "current price") == true){
+                        echo "NEW LINE", $itemPrice, PHP_EOL;
+                        $itemPriceArray = explode(' ', $itemPrice);
+                        $lastIndex = count($itemPriceArray) - 1;
+                        $itemPrice = $itemPriceArray[$lastIndex];
+                        $pricesArray->append($itemPrice);
+                    };
 
+                    
+                });
+                    foreach($traversableItems as $key => $item){
+                        $itemPrice = $itemPriceArray[$key];
+                        $traversableItems[$key]["price"] = $itemPrice; 
+                }
+                
 
-   
-    
                 return response()->json([
                     'message' => 'Scraping successful!',
                     'data' => $traversableItems,
