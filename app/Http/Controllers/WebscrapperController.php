@@ -15,7 +15,7 @@ class WebscrapperController extends Controller
                 // Initialize Guzzle client with proper configurations
                 // Create new client to add alternate paths based on traversable items array
                 $client = new Client([
-                    'base_uri' => 'https://www.walmart.com/search?q=camping+supplies',
+                    'base_uri' => 'https://www.walmart.com/search?q=football',
                     'timeout' => 10.0,
                     'connect_timeout' => 5.0,
                     'headers' => [
@@ -35,7 +35,6 @@ class WebscrapperController extends Controller
                 // Initiate Dom Crawler from Sympony
                 $crawler = new Crawler($body);
                 $traversableItems = new ArrayObject();
-                $itemPrice = 0;
                 // Fetch all anchor tags on page
                 $crawler->filter('a')->each(function (Crawler $node) use ($traversableItems) {
                     $href = $node->attr("href");
@@ -83,23 +82,23 @@ class WebscrapperController extends Controller
                  });
                 // get all prices
                 $itemPriceArray = [];
-                 $crawler->filter('div > span')->each(function (Crawler $node, $i) use ($traversableItems) {
+                $pricesArray = new ArrayObject();
+                 $crawler->filter('div > span')->each(function (Crawler $node, $i) use ($traversableItems, $pricesArray) {
                     $itemPrice = $node->text();
-                    $pricesArray = new ArrayObject();
                     if(str_contains($itemPrice, "current price") == true){
-                        echo "NEW LINE", $itemPrice, PHP_EOL;
                         $itemPriceArray = explode(' ', $itemPrice);
                         $lastIndex = count($itemPriceArray) - 1;
                         $itemPrice = $itemPriceArray[$lastIndex];
+                        echo "The Final Price ", $itemPrice, PHP_EOL;
                         $pricesArray->append($itemPrice);
+                        echo count($itemPriceArray);
                     };
-
-                    
                 });
-                    foreach($traversableItems as $key => $item){
-                        $itemPrice = $itemPriceArray[$key];
-                        $traversableItems[$key]["price"] = $itemPrice; 
+                   // get and attach all prices
+                    foreach($pricesArray as $key => $itemValue){
+                        $traversableItems[$key]["price"] = $pricesArray[$key]; 
                 }
+
                 
 
                 return response()->json([
