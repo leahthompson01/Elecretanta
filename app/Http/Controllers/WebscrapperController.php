@@ -13,6 +13,7 @@ class WebscrapperController extends Controller
     public function scrape(Request $request){  
             try {
                 // Initialize Guzzle client with proper configurations
+                // Create new client to add alternate paths based on traversable items array
                 $client = new Client([
                     'base_uri' => 'https://www.walmart.com/search?q=camping+supplies',
                     'timeout' => 10.0,
@@ -25,25 +26,29 @@ class WebscrapperController extends Controller
                     'verify' => false, // Disable SSL verification
                 ]);
     
-                
+                // Fetch all items based on the search parameters
                 $response = $client->get('');
                 $body = $response->getBody()->getContents();
 
 
-                // to get url to page specific item, 
-                //(div) mb0 ph0-xl pt0-xl bb b--near-white w-25 pb3-m ph1"
-
+                
+                // Initiate Dom Crawler from Sympony
                 $crawler = new Crawler($body);
                 $traversableItems = new ArrayObject();
+                // Fetch all anchor tags on page
                 $links = $crawler->filter('a')->each(function (Crawler $node) use ($traversableItems) {
-
-                   $href = $node->attr("href");
-                   $substring = 'track';
-                   $itemName = $node->text();
-
-                   if(str_contains($href, $substring) == true){
+                    $href = $node->attr("href");
+                    $substring = 'track';
+                    $itemName = $node->text();
+                
+                    $itemNameArray = explode(' ', $itemName);
+                    // Return all anchor tags that contains the substring 'track' in the url link
+                    // For Example https://www.walmart.com/track because all links that include the string 'track' is a commonality between purchaseable items found by query
+                    // Also checking to see if any of the items have an empty name field if so dont return name with url (likely a url to another part of the website if this is true)
+                    // IMPORTANT: Splitting each item's name into an array of strings and getting the first word of each itemNameArray to target items with valid urls instead of returning urls that may not be associated to an item!
+                   if(str_contains($href, $substring) == true && str_contains($href, $itemNameArray[0]) == true && $itemName !== ''){
                     
-                       
+                    // For Each Item that has the url substring 'track' create a new item and append it too traversable array
                     $newItem = [
                            'name' => $itemName,
                            'href' => $href,
@@ -53,27 +58,33 @@ class WebscrapperController extends Controller
                     
                    }
                    else {
-                    return null;
+                    return false;
                    }
 
-
-                    // return [
-                    //     'text' => $node->text(),
-                    //     'href' => $node->attr('href'),
-                    // ];
                 });
+
                 
 
+                $links = $crawler->filter('img')->each(function (Crawler $node, $index) use ($traversableItems) {
+                   
+                    $imageUrl = $node->attr("src");
+                    $substring = 'href';
+                    $itemName = $node->text();
 
-               
-                // (div) > (div) > (a) -> w-100 h-100 z-1 hide-sibling-opacity  absolute, -> href
+                    while(count($traversableItems) > $index) {
+                        // var_dump($traversableItems[$index]);
+                       
+                        $traversableItems[$index]["imageUrl"] = $imageUrl;
 
-                // Container for specific data ->// w_KPWk w_GxNv flex-row undefined
-                
-                // w_aoqv w_wRee w_fdPt to get name
-                // 
+                        return;
+                    };
+ 
+                 });
+ 
+
+
+   
     
-                // Return a success response
                 return response()->json([
                     'message' => 'Scraping successful!',
                     'data' => $traversableItems,
