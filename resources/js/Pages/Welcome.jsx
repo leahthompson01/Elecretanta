@@ -1,5 +1,6 @@
 import { Head, Link } from '@inertiajs/react';
 import GuestLayout from '@/Layouts/GuestLayout';
+import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 
 export default function Welcome({ auth, laravelVersion, phpVersion }) {
     const handleImageError = () => {
@@ -14,6 +15,8 @@ export default function Welcome({ auth, laravelVersion, phpVersion }) {
     };
 
     return (
+        <>
+        {auth.user ? 
         <GuestLayout
         header={
             <h2 className="text-xl font-semibold leading-tight text-gray-800 dark:text-gray-200">
@@ -324,5 +327,15 @@ export default function Welcome({ auth, laravelVersion, phpVersion }) {
                 </div>
             </div>
         </GuestLayout>
+            :
+        <AuthenticatedLayout
+        header={
+            <h2>Welcome</h2>
+        }
+        >
+
+        </AuthenticatedLayout>
+            }
+        </>
     );
 }
