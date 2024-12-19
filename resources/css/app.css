@@ -3,7 +3,12 @@
 @tailwind utilities;
 
 @layer base {
-    html {
-      font-family: "Libre Baskerville", system-ui, sans-serif;
-    }
+  html {
+    font-family: "Libre Baskerville", system-ui, sans-serif;
   }
+
+  /* For Testing uncomment below */
+  /* body * {
+    border: 1px solid black;
+  } */
+}

@@ -11,10 +11,11 @@ export default function AuthenticatedLayout({ header, children }) {
         useState(false);
 
     return (
-        <div className="bg-[#F2E8CF] w-full min-h-screen flex flex-col items-center">
-            <nav className="w-full bg-[rgb(255,255,255,.65)] rounded-[1000px] border-b border-gray-100 dark:border-gray-700">
+        <div className="bg-[#F2E8CF] w-full min-h-screen flex flex-col items-center px-4">
+            <nav className="w-full bg-[rgb(255,255,255,.65)] rounded-full border-b border-gray-100 dark:border-gray-700 my-8">
                 <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-                    <div className="flex h-16 justify-between">
+                    <div className="flex h-16 justify-between items-center relative">
+                        {/* Logo on left */}
                         <div className="flex">
                             <div className="flex shrink-0 items-center">
                                 <Link href="/">
@@ -23,22 +24,22 @@ export default function AuthenticatedLayout({ header, children }) {
                             </div>
                         </div>
 
-                        <div className="sm:ms-6 sm:flex sm:items-center">
-                        <div className="relative ms-3">
-                        <h1 className="text-[3rem] font-semibold tracking-[-.25px]">
-                            Secret Santa
-                        </h1>
-                        </div>
+                        {/* Centered Title */}
+                        <div className="absolute left-1/2 transform -translate-x-1/2">
+                            <h1 className="text-[2rem] lg:text-[3rem] font-baskerville tracking-[-.25px] whitespace-nowrap">
+                                Secret Santa
+                            </h1>
                         </div>
 
-
-                        <div className="hidden sm:ms-6 sm:flex sm:items-center">
-                            <div className="relative ms-3">
-                                <NavLink href="/">Home</NavLink>
-                                <NavLink href="" method="post" as="button">
+                        {/* Navigation on right */}
+                        <div className="hidden sm:flex sm:items-center">
+                            <div className="flex items-center gap-2">
+                                <NavLink className="font-extrabold font-baskerville" href="/">Home</NavLink>
+                                <NavLink className="font-extrabold font-baskerville" href="" method="post" as="button">
                                     About
                                 </NavLink>
                                 <SecondaryButton
+                                    className="text-xl font-bold font-baskerville"
                                     method="post"
                                     href={route("logout")}
                                     as="button"
@@ -47,7 +48,7 @@ export default function AuthenticatedLayout({ header, children }) {
                                 </SecondaryButton>
                             </div>
                         </div>
-
+                        {/* Hamburger menu */}
                         <div className="-me-2 flex items-center sm:hidden">
                             <button
                                 onClick={() =>
@@ -89,7 +90,7 @@ export default function AuthenticatedLayout({ header, children }) {
                             </button>
                         </div>
 
-                        
+
                     </div>
                 </div>
 
@@ -110,17 +111,17 @@ export default function AuthenticatedLayout({ header, children }) {
 
                     <div className="border-t border-gray-200 pb-1 pt-4 dark:border-gray-600">
                         <div className="mt-3 space-y-1">
-                                <ResponsiveNavLink href="/">Home</ResponsiveNavLink>
-                                <ResponsiveNavLink href="" method="post" as="button">
-                                    About
-                                </ResponsiveNavLink>
-                                <SecondaryButton
-                                    method="post"
-                                    href={route("logout")}
-                                    as="button"
-                                >
-                                    Log Out
-                                </SecondaryButton>
+                            <ResponsiveNavLink href="/">Home</ResponsiveNavLink>
+                            <ResponsiveNavLink href="" method="post" as="button">
+                                About
+                            </ResponsiveNavLink>
+                            <SecondaryButton
+                                method="post"
+                                href={route("logout")}
+                                as="button"
+                            >
+                                Log Out
+                            </SecondaryButton>
                         </div>
                     </div>
                 </div>
