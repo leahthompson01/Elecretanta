@@ -16,9 +16,8 @@ Route::get('/', function () {
     ]);
 });
 
-//buy gift exchange
-
 Route::middleware('auth')->group(function () {
+    Route::get('/giftExchange', [GiftController::class, 'index'])->name('giftExchange.index');
     Route::post('/giftExchange', [GiftController::class, 'store'])->name('giftExchange.store');
 });
 
