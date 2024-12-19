@@ -26,7 +26,7 @@ class SantaGroupController extends Controller
             'members' => 'required', 'array', 'max: 500'
         ]);
 
-        SantaGroupExchange::create(['user_id' => $request->user_id, 'budget' => $validated['budget'], 'members' => $validated['members']]);
+        SantaGroup::create(['user_id' => $request->user()->id, 'budget' => $validated['budget'], 'members' => $validated['members']]);
         return redirect()->route('santaGroup.index');
     }
 }

@@ -27,7 +27,8 @@ Route::get('/dashboard', function () {
 })->middleware(['auth', 'verified'])->name('dashboard');
 
 Route::middleware('auth')->group(function () {
-    Route::post('/setBudget', [SantaGroupController::class, 'store'])->name('giftExchange.store');
+    Route::get('/santaGroup', [SantaGroupController::class, 'index'])->name('santaGroup.index');
+    Route::post('/santaGroup', [SantaGroupController::class, 'store'])->name('santaGroup.store');
 });
 
 Route::middleware('auth')->group(function () {
