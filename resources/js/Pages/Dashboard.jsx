@@ -1,4 +1,5 @@
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout";
+import { usePage } from "@inertiajs/react";
 import { Head } from "@inertiajs/react";
 import gear from "../../assets/icons/gear.svg";
 import gift from "../../assets/icons/gift.svg";
@@ -7,6 +8,7 @@ import lightbulb from "../../assets/icons/lightbulb.svg";
 import PrimaryButton from "@/Components/PrimaryButton";
 
 export default function Dashboard({userName}) {
+    const user = usePage().props.auth.user;
     const dashboardItems = [
         {
             image: gift,
@@ -34,7 +36,7 @@ export default function Dashboard({userName}) {
             <Head title="Dashboard" />
             <h1 className="sr-only">Dashboard</h1>
             <h2 className="leading-tight text-black font-bold text-5xl tracking-[-.005em] font-baskerville">
-                Hello, {userName}
+                Hello, {user.name}
             </h2>
             <ul className="grid grid-cols-[repeat(auto-fit,minmax(15.625rem,1fr))] gap-6 justify-between pt-12 pb-16">
                 {dashboardItems.map((item) => {
