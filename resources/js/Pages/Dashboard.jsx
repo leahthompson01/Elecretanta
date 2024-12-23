@@ -46,11 +46,11 @@ export default function Dashboard() {
             <h2 className="leading-tight text-black font-bold text-5xl tracking-[-.005em] font-baskerville">
                 Hello, RICHARD
             </h2>
-            <ul className="grid grid-cols-[repeat(auto-fit,minmax(15.625rem,1fr))] gap-6 justify-between py-12 ">
+            <ul className="grid grid-cols-[repeat(auto-fit,minmax(15.625rem,1fr))] gap-6 justify-between py-12">
                 {dashboardItems.map((item) => {
                     const { image, title, link } = item;
                     return (
-                        <li className="border border-solid border-[#B88914] rounded-2xl flex-1 bg-[#FAF7EE] px-9 py-8 relative ">
+                        <li className="border border-solid border-[#B88914] rounded-2xl flex-1 bg-[#FAF7EE] px-9 py-8 flex flex-col justify-center relative transition duration-200 [&:has(a:hover)]:shadow-xl [&:has(a:hover)]:-translate-y-1 md:min-h-[20rem]">
                             <div className="pb-4">
                                 <img src={image} alt="" className="mx-auto" />
                             </div>
@@ -66,7 +66,7 @@ export default function Dashboard() {
                     );
                 })}
             </ul>
-            <SecondaryButton className="w-full font-baskerville justify-center py-4 text-2xl max-w-max px-8 font-bold bg-[#BC4749]">
+            <SecondaryButton className="w-full font-baskerville justify-center py-4 text-2xl max-w-max px-8 font-bold bg-[#BC4749] self-center">
                 Make your list
             </SecondaryButton>
         </AuthenticatedLayout>

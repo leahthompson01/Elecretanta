@@ -147,7 +147,7 @@ export default function AuthenticatedLayout({ header, children }) {
                 </header>
             )}
 
-            <main className="mx-auto w-[90%] max-[87.5rem]">{children}</main>
+            <main className="mx-auto w-[90%] max-w-[87.5rem] py-14 flex flex-1 flex-col">{children}</main>
         </div>
     );
 }
