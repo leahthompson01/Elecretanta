@@ -122,7 +122,6 @@ export default function AuthenticatedLayout({ header, children }) {
                             <ResponsiveNavLink href="/">Home</ResponsiveNavLink>
                             <ResponsiveNavLink
                                 href=""
-                                method="post"
                                 as="button"
                             >
                                 About

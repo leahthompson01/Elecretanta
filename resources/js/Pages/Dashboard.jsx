@@ -6,7 +6,7 @@ import heart from "../../assets/icons/heart.svg";
 import lightbulb from "../../assets/icons/lightbulb.svg";
 import PrimaryButton from "@/Components/PrimaryButton";
 
-export default function Dashboard() {
+export default function Dashboard({userName}) {
     const dashboardItems = [
         {
             image: gift,
@@ -34,13 +34,16 @@ export default function Dashboard() {
             <Head title="Dashboard" />
             <h1 className="sr-only">Dashboard</h1>
             <h2 className="leading-tight text-black font-bold text-5xl tracking-[-.005em] font-baskerville">
-                Hello, RICHARD
+                Hello, {userName}
             </h2>
             <ul className="grid grid-cols-[repeat(auto-fit,minmax(15.625rem,1fr))] gap-6 justify-between pt-12 pb-16">
                 {dashboardItems.map((item) => {
                     const { image, title, link } = item;
                     return (
-                        <li key={title} className="border border-solid border-[#B88914] rounded-2xl flex-1 bg-[#FAF7EE] px-9 py-8 flex flex-col justify-center relative transition duration-200 [&:has(a:hover)]:shadow-xl [&:has(a:hover)]:-translate-y-1 md:min-h-[20rem]">
+                        <li
+                            key={title}
+                            className="border border-solid border-[#B88914] rounded-2xl flex-1 bg-[#FAF7EE] px-9 py-8 flex flex-col justify-center relative transition duration-200 [&:has(a:hover)]:shadow-xl [&:has(a:hover)]:-translate-y-1 md:min-h-[20rem]"
+                        >
                             <div className="pb-4">
                                 <img src={image} alt="" className="mx-auto" />
                             </div>
