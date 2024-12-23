@@ -5,6 +5,7 @@ import gear from "../../assets/icons/gear.svg";
 import gift from "../../assets/icons/gift.svg";
 import heart from "../../assets/icons/heart.svg";
 import lightbulb from "../../assets/icons/lightbulb.svg";
+import PrimaryButton from "@/Components/PrimaryButton";
 
 export default function Dashboard() {
     const dashboardItems = [
@@ -46,7 +47,7 @@ export default function Dashboard() {
             <h2 className="leading-tight text-black font-bold text-5xl tracking-[-.005em] font-baskerville">
                 Hello, RICHARD
             </h2>
-            <ul className="grid grid-cols-[repeat(auto-fit,minmax(15.625rem,1fr))] gap-6 justify-between py-12">
+            <ul className="grid grid-cols-[repeat(auto-fit,minmax(15.625rem,1fr))] gap-6 justify-between pt-12 pb-16">
                 {dashboardItems.map((item) => {
                     const { image, title, link } = item;
                     return (
@@ -66,9 +67,9 @@ export default function Dashboard() {
                     );
                 })}
             </ul>
-            <SecondaryButton className="w-full font-baskerville justify-center py-4 text-2xl max-w-max px-8 font-bold bg-[#BC4749] self-center">
+            <PrimaryButton href="/" className="w-full font-baskerville justify-center py-4 text-lg md:text-2xl md:max-w-max px-10 font-bold tracking-[-0.01em] self-center capitalize">
                 Make your list
-            </SecondaryButton>
+            </PrimaryButton>
         </AuthenticatedLayout>
     );
 }
