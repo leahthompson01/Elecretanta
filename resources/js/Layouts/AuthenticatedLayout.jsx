@@ -34,8 +34,18 @@ export default function AuthenticatedLayout({ header, children }) {
                         {/* Navigation on right */}
                         <div className="hidden sm:flex sm:items-center">
                             <div className="flex items-center gap-2">
-                                <NavLink className="font-extrabold font-baskerville" href="/">Home</NavLink>
-                                <NavLink className="font-extrabold font-baskerville" href="" method="post" as="button">
+                                <NavLink
+                                    className="font-extrabold font-baskerville"
+                                    href="/"
+                                >
+                                    Home
+                                </NavLink>
+                                <NavLink
+                                    className="font-extrabold font-baskerville"
+                                    href=""
+                                    method="post"
+                                    as="button"
+                                >
                                     About
                                 </NavLink>
                                 <SecondaryButton
@@ -89,8 +99,6 @@ export default function AuthenticatedLayout({ header, children }) {
                                 </svg>
                             </button>
                         </div>
-
-
                     </div>
                 </div>
 
@@ -112,7 +120,10 @@ export default function AuthenticatedLayout({ header, children }) {
                     <div className="border-t border-gray-200 pb-1 pt-4 dark:border-gray-600">
                         <div className="mt-3 space-y-1">
                             <ResponsiveNavLink href="/">Home</ResponsiveNavLink>
-                            <ResponsiveNavLink href="" method="post" as="button">
+                            <ResponsiveNavLink
+                                href=""
+                                as="button"
+                            >
                                 About
                             </ResponsiveNavLink>
                             <SecondaryButton
@@ -135,7 +146,9 @@ export default function AuthenticatedLayout({ header, children }) {
                 </header>
             )}
 
-            <main>{children}</main>
+            <main className="mx-auto w-[90%] max-w-[87.5rem] py-8 md:pt-14 md:pb-20 flex flex-1 flex-col">
+                {children}
+            </main>
         </div>
     );
 }
