@@ -7,7 +7,7 @@ import heart from "../../assets/icons/heart.svg";
 import lightbulb from "../../assets/icons/lightbulb.svg";
 import PrimaryButton from "@/Components/PrimaryButton";
 
-export default function Dashboard({userName}) {
+export default function Dashboard() {
     const user = usePage().props.auth.user;
     const dashboardItems = [
         {
