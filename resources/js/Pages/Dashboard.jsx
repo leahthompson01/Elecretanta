@@ -1,6 +1,5 @@
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout";
 import { Head } from "@inertiajs/react";
-import SecondaryButton from "@/Components/SecondaryButton";
 import gear from "../../assets/icons/gear.svg";
 import gift from "../../assets/icons/gift.svg";
 import heart from "../../assets/icons/heart.svg";
@@ -33,17 +32,6 @@ export default function Dashboard() {
     return (
         <AuthenticatedLayout>
             <Head title="Dashboard" />
-
-            {/* <SecondaryButton className="ms-4">Test</SecondaryButton>
-            <div className="py-12">
-                <div className="mx-auto max-w-7xl sm:px-6 lg:px-8">
-                    <div className="overflow-hidden bg-white shadow-sm sm:rounded-lg dark:bg-gray-800">
-                        <div className="p-6 text-gray-900 dark:text-gray-100">
-                            You're logged in!
-                        </div>
-                    </div>
-                </div>
-            </div> */}
             <h1 className="sr-only">Dashboard</h1>
             <h2 className="leading-tight text-black font-bold text-5xl tracking-[-.005em] font-baskerville">
                 Hello, RICHARD
