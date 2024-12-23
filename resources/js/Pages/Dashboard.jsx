@@ -40,7 +40,7 @@ export default function Dashboard() {
                 {dashboardItems.map((item) => {
                     const { image, title, link } = item;
                     return (
-                        <li className="border border-solid border-[#B88914] rounded-2xl flex-1 bg-[#FAF7EE] px-9 py-8 flex flex-col justify-center relative transition duration-200 [&:has(a:hover)]:shadow-xl [&:has(a:hover)]:-translate-y-1 md:min-h-[20rem]">
+                        <li key={title} className="border border-solid border-[#B88914] rounded-2xl flex-1 bg-[#FAF7EE] px-9 py-8 flex flex-col justify-center relative transition duration-200 [&:has(a:hover)]:shadow-xl [&:has(a:hover)]:-translate-y-1 md:min-h-[20rem]">
                             <div className="pb-4">
                                 <img src={image} alt="" className="mx-auto" />
                             </div>
