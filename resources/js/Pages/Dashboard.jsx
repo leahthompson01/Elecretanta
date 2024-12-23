@@ -11,22 +11,22 @@ export default function Dashboard() {
         {
             image: gift,
             title: "gift exchanges",
-            link: "/",
+            link: "/dashboard",
         },
         {
             image: heart,
             title: "hobbies",
-            link: "/",
+            link: "/dashboard",
         },
         {
             image: lightbulb,
             title: "ideas",
-            link: "/",
+            link: "/dashboard",
         },
         {
             image: gear,
             title: "settings",
-            link: "/",
+            link: "/dashboard",
         },
     ];
     return (
@@ -50,12 +50,17 @@ export default function Dashboard() {
                 {dashboardItems.map((item) => {
                     const { image, title, link } = item;
                     return (
-                        <li className="border border-solid border-[#B88914] rounded-2xl flex-1 bg-[#FAF7EE] px-9 py-8">
-                            <div>
+                        <li className="border border-solid border-[#B88914] rounded-2xl flex-1 bg-[#FAF7EE] px-9 py-8 relative ">
+                            <div className="pb-4">
                                 <img src={image} alt="" className="mx-auto" />
                             </div>
                             <h2 className="capitalize font-bold text-2xl text-center ">
-                                {title}
+                                <a
+                                    href={link}
+                                    className="after:absolute after:left-0 after:top-0 after:w-full after:h-full"
+                                >
+                                    {title}
+                                </a>
                             </h2>
                         </li>
                     );
