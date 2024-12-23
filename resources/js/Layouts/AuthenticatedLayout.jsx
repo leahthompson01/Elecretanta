@@ -146,7 +146,7 @@ export default function AuthenticatedLayout({ header, children }) {
                 </header>
             )}
 
-            <main className="mx-auto w-[90%] max-w-[87.5rem] pt-14 pb-20 flex flex-1 flex-col">
+            <main className="mx-auto w-[90%] max-w-[87.5rem] py-8 md:pt-14 md:pb-20 flex flex-1 flex-col">
                 {children}
             </main>
         </div>

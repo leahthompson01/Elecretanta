@@ -13,43 +13,47 @@ export default function Dashboard() {
         {
             image: gift,
             title: "gift exchanges",
-            link: "/dashboard",
+            link: "/gift-exchange",
         },
         {
             image: heart,
             title: "hobbies",
-            link: "/dashboard",
+            link: "/hobbies",
         },
         {
             image: lightbulb,
             title: "ideas",
-            link: "/dashboard",
+            link: "/ideas",
         },
         {
             image: gear,
             title: "settings",
-            link: "/dashboard",
+            link: "/settings",
         },
     ];
     return (
         <AuthenticatedLayout>
             <Head title="Dashboard" />
             <h1 className="sr-only">Dashboard</h1>
-            <h2 className="leading-tight text-black font-bold text-5xl tracking-[-.005em] font-baskerville">
+            <h2 className="leading-tight text-black font-bold text-3xl md:text-5xl tracking-[-.005em] font-baskerville">
                 Hello, {user.name}
             </h2>
-            <ul className="grid grid-cols-[repeat(auto-fit,minmax(15.625rem,1fr))] gap-6 justify-between pt-12 pb-16">
+            <ul className="grid grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6 justify-between pt-12 pb-16">
                 {dashboardItems.map((item) => {
                     const { image, title, link } = item;
                     return (
                         <li
                             key={title}
-                            className="border border-solid border-[#B88914] rounded-2xl flex-1 bg-[#FAF7EE] px-9 py-8 flex flex-col justify-center relative transition duration-200 [&:has(a:hover)]:shadow-xl [&:has(a:hover)]:-translate-y-1 md:min-h-[20rem]"
+                            className="border border-solid border-[#B88914] rounded-2xl flex-1 bg-[#FAF7EE] px-[5%] py-8 flex flex-col justify-center relative transition duration-200 [&:has(a:hover)]:shadow-xl [&:has(a:hover)]:-translate-y-1 md:min-h-[20rem]"
                         >
                             <div className="pb-4">
-                                <img src={image} alt="" className="mx-auto" />
+                                <img
+                                    src={image}
+                                    alt=""
+                                    className="mx-auto h-[3.75rem] w-[3.75rem] md:h-auto md:w-auto"
+                                />
                             </div>
-                            <h2 className="capitalize font-bold text-2xl text-center ">
+                            <h2 className="capitalize font-bold text-xl md:text-2xl text-center leading-[1.1]">
                                 <a
                                     href={link}
                                     className="after:absolute after:left-0 after:top-0 after:w-full after:h-full"
