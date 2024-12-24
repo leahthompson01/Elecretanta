@@ -13,7 +13,7 @@ class WebscrapperController extends Controller
         try {
             // Initialize Guzzle client
             $client = new Client([
-                'base_uri' => 'https://www.walmart.com/search?q=basketball',
+                'base_uri' => 'https://www.walmart.com/search?q=packers ',
                 'timeout' => 10.0,
                 'connect_timeout' => 5.0,
                 'headers' => [
@@ -40,7 +40,7 @@ class WebscrapperController extends Controller
                 $substring = 'track';
                 $imageURL = $crawler->filter("#is-0-productImage-$index")->attr("src", "");
 
-                if (str_contains($href, $substring) && $itemName !== '') {
+                if (str_contains($href, $substring) && $itemName !== '' && str_contains($itemName, "Sponsored") == false && str_contains($itemName, "Shop now") == false && str_contains($itemName, "Options") !== true) {
                     $traversableItems[] = [
                         "itemName" => $itemName,
                         "link" => $href,
