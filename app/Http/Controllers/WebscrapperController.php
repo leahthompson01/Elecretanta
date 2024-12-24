@@ -13,7 +13,7 @@ class WebscrapperController extends Controller
         try {
             // Initialize Guzzle client
             $client = new Client([
-                'base_uri' => 'https://www.walmart.com/search?q=packers ',
+                'base_uri' => 'https://www.walmart.com/search?q=Mario+videogame',
                 'timeout' => 10.0,
                 'connect_timeout' => 5.0,
                 'headers' => [
@@ -55,8 +55,47 @@ class WebscrapperController extends Controller
                 $lastIndex = count($traversableItems) - 1; 
                 $index = 0;
                 foreach ($traversableItems as $product){
-                    echo $index;
-                    $traversableItems[$index]["imageUrl"] = $imageArray[$index];
+                    foreach ($imageArray as $imageURL){
+                        $itemNameString = preg_replace("/[^a-zA-Z0-9\s]|[!:]/", "", $product['itemName']);
+                        $itemNameArray = explode(" ", $itemNameString);
+
+                        
+                        
+
+                        switch (count($itemNameArray)){
+                            case 1:
+                                if(str_contains($imageURL, $itemNameArray[0]) == true){
+                                    echo $imageURL, $itemNameArray[0], PHP_EOL;
+                                    $traversableItems[$index]["imageUrl"] = $imageURL;
+                                }
+                            break;
+                            case 2:
+                                if(str_contains($imageURL, $itemNameArray[0]) == true && str_contains($imageURL, $itemNameArray[1]) == true ){
+                                    echo $imageURL, $itemNameArray[0], PHP_EOL;
+                                    $traversableItems[$index]["imageUrl"] = $imageURL;
+                                }
+                                
+                            //code block;
+                            break;
+                            case 3:
+                                if(str_contains($imageURL, $itemNameArray[0]) == true && str_contains($imageURL, $itemNameArray[1]) == true && str_contains($imageURL, $itemNameArray[2]) == true ){
+                                    echo $imageURL, $itemNameArray[0], PHP_EOL;
+                                    $traversableItems[$index]["imageUrl"] = $imageURL;
+                                }
+                            //code block
+                            break;
+                            default:
+                                if(str_contains($imageURL, $itemNameArray[0]) == true && str_contains($imageURL, $itemNameArray[1]) == true && str_contains($imageURL, $itemNameArray[2]) == true && str_contains($imageURL, $itemNameArray[3]) == true ){
+                                    echo $imageURL, $itemNameArray[0], PHP_EOL;
+                                    $traversableItems[$index]["imageUrl"] = $imageURL;
+                                }
+                            //code block
+                        }
+                        
+  
+                       
+                    }
+                    
                     $index++;
                 }
                 
