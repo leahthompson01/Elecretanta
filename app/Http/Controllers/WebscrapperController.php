@@ -5,6 +5,7 @@ use Illuminate\Http\Request;
 use GuzzleHttp\Exception\RequestException;
 use GuzzleHttp\Client;
 use Symfony\Component\DomCrawler\Crawler;
+use ArrayObject;
 
 class WebscrapperController extends Controller
 {
@@ -65,13 +66,13 @@ class WebscrapperController extends Controller
                         switch (count($itemNameArray)){
                             case 1:
                                 if(str_contains($imageURL, $itemNameArray[0]) == true){
-                                    echo $imageURL, $itemNameArray[0], PHP_EOL;
+                                    
                                     $traversableItems[$index]["imageUrl"] = $imageURL;
                                 }
                             break;
                             case 2:
                                 if(str_contains($imageURL, $itemNameArray[0]) == true && str_contains($imageURL, $itemNameArray[1]) == true ){
-                                    echo $imageURL, $itemNameArray[0], PHP_EOL;
+                                   
                                     $traversableItems[$index]["imageUrl"] = $imageURL;
                                 }
                                 
@@ -79,14 +80,14 @@ class WebscrapperController extends Controller
                             break;
                             case 3:
                                 if(str_contains($imageURL, $itemNameArray[0]) == true && str_contains($imageURL, $itemNameArray[1]) == true && str_contains($imageURL, $itemNameArray[2]) == true ){
-                                    echo $imageURL, $itemNameArray[0], PHP_EOL;
+                                 
                                     $traversableItems[$index]["imageUrl"] = $imageURL;
                                 }
                             //code block
                             break;
                             default:
                                 if(str_contains($imageURL, $itemNameArray[0]) == true && str_contains($imageURL, $itemNameArray[1]) == true && str_contains($imageURL, $itemNameArray[2]) == true && str_contains($imageURL, $itemNameArray[3]) == true ){
-                                    echo $imageURL, $itemNameArray[0], PHP_EOL;
+                                    
                                     $traversableItems[$index]["imageUrl"] = $imageURL;
                                 }
                             //code block
@@ -100,42 +101,37 @@ class WebscrapperController extends Controller
                 }
                 
             }
-            
-                        #is-0-productImage-$index
-                        // $itemNameArray = explode(' ', $itemName);
-                     
-                        // if(str_contains($href, $substring) == true && str_contains($href, $itemNameArray[0]) == true && $itemName !== ''){
-                    
-                        //     // For Each Item that has the url substring 'track' create a new item and append it too traversable array
-                        //    }
+            $itemPriceArray = [];
+                $pricesArray = new ArrayObject();
+                 $crawler->filter('div > span')->each(function (Crawler $node, $i) use ( $pricesArray) {
+                    $itemPrice = $node->text();
+                    if(str_contains($itemPrice, "current price") == true){
+                        $itemPriceArray = explode(' ', $itemPrice);
+                        $lastIndex = count($itemPriceArray) - 1;
+                        $itemPrice = $itemPriceArray[$lastIndex];
+                        $pricesArray->append($itemPrice);
+                    }
+                    else {
+                        return;
+                    }
+                });
+                   // get and attach all prices
+                    foreach($pricesArray as $key => $itemValue) {
+                        $numberOfProducts = count($traversableItems) - 1;
+                        if($key <= $numberOfProducts){
+                            echo "TRUE";
+                            $traversableItems[$key]["price"] = $pricesArray[$key]; 
+                        } else {
+                            echo "OR ELSE";
+                        }
+                        
+                }
             
                     // Return all anchor tags that contains the substring 'track' in the url link
                     // For Example https://www.walmart.com/track because all links that include the string 'track' is a commonality between purchaseable items found by query
                     // Also checking to see if any of the items have an empty name field if so dont return name with url (likely a url to another part of the website if this is true)
                     // IMPORTANT: Splitting each item's name into an array of strings and getting the first word of each itemNameArray to target items with valid urls instead of returning urls that may not be associated to an item!
-          
-
-                
-                // get all images
-               
-                // get all prices
-                // $itemPriceArray = [];
-                // $pricesArray = new ArrayObject();
-                //  $crawler->filter('div > span')->each(function (Crawler $node, $i) use ($traversableItems, $pricesArray) {
-                //     $itemPrice = $node->text();
-                //     if(str_contains($itemPrice, "current price") == true){
-                //         $itemPriceArray = explode(' ', $itemPrice);
-                //         $lastIndex = count($itemPriceArray) - 1;
-                //         $itemPrice = $itemPriceArray[$lastIndex];
-                //         $pricesArray->append($itemPrice);
-                //         echo count($itemPriceArray);
-                //     };
-                // });
-                //    // get and attach all prices
-                //     foreach($pricesArray as $key => $itemValue){
-                //         $traversableItems[$key]["price"] = $pricesArray[$key]; 
-                // }
-
+              
             return response()->json([
                 'message' => 'Scraping successful!',
                 'data' => $traversableItems,
