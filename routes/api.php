@@ -28,3 +28,5 @@ Route::post("/group/addMember", [GroupController::class,"addMember"])->name("gro
 Route::post("/memberships/add", [MembershipsController::class,"addMembership"])->name("memberships");
 
 Route::get("/webscrapper", [WebscrapperController::class, "scrape"] ) ->name("webscrapper");
+
+Route::get("/generateGiftIdeas", [WebscrapperController::class, "generateGiftIdeas"] ) -> name("generateGiftIdeas");

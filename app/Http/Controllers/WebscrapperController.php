@@ -5,16 +5,26 @@ use Illuminate\Http\Request;
 use GuzzleHttp\Exception\RequestException;
 use GuzzleHttp\Client;
 use Symfony\Component\DomCrawler\Crawler;
+use EchoLabs\Prism\Prism;
+use EchoLabs\Prism\Enums\Provider;
 use ArrayObject;
 
 class WebscrapperController extends Controller
 {
-    public function scrape(Request $request)
-    {
+    public function scrape($geminiGiftSuggestions)
+    {   
+       
+        if(is_array($geminiGiftSuggestions)){
+            var_dump($geminiGiftSuggestions);
+  
+            echo "ITS AN ARRAY";
+        } else {
+            echo "NOT AN ARRAY";
+        }
         try {
             // Initialize Guzzle client
             $client = new Client([
-                'base_uri' => 'https://www.walmart.com/search?q=Mario+videogame',
+                'base_uri' => 'https://www.walmart.com/search?q=Sports Team Socks or Headband',
                 'timeout' => 10.0,
                 'connect_timeout' => 5.0,
                 'headers' => [
@@ -119,14 +129,10 @@ class WebscrapperController extends Controller
                     foreach($pricesArray as $key => $itemValue) {
                         $numberOfProducts = count($traversableItems) - 1;
                         if($key <= $numberOfProducts){
-                            echo "TRUE";
-                            $traversableItems[$key]["price"] = $pricesArray[$key]; 
-                        } else {
-                            echo "OR ELSE";
-                        }
-                        
+                         
+                            $traversableItems[$key]["price"] = $pricesArray[$key];      
                 }
-            
+            };
                     // Return all anchor tags that contains the substring 'track' in the url link
                     // For Example https://www.walmart.com/track because all links that include the string 'track' is a commonality between purchaseable items found by query
                     // Also checking to see if any of the items have an empty name field if so dont return name with url (likely a url to another part of the website if this is true)
@@ -150,4 +156,26 @@ class WebscrapperController extends Controller
             ], 500);
         }
     }
-}
+
+    public function generateGiftIdeas(Request $request){
+        try{
+            $response = Prism::text()->using(Provider::Gemini, "gemini-1.5-flash")->withPrompt(
+                "I am looking to gift an age appropriate gift for a 20 year old with a budget less than $20, and the person has the following interests: hoodies, sports, TV shows, Netflix, and ice cream. Please provide only a valid JSON array without any additional text or wrapping elements like code block markers or comments. The JSON should only include the data in array form with objects containing the keys `item` and `reason`. Do not add anything else.\n\nFor example:\n\n[\n    {\n        \"item\": \"Gift card for streaming service (Netflix etc.)\",\n        \"reason\": \"Appeals to their interest in TV shows and Netflix, and is easily adjustable to their budget.\"\n    },\n    {\n        \"item\": \"Sports-themed socks or small accessory\",\n        \"reason\": \"Relatively inexpensive and caters to their interest in sports.\"\n    }\n]"
+            )->generate();
+        
+            $response = $response->text;
+            $geminiGiftSuggestion = json_decode($response, true);
+                
+            if (json_last_error() !== JSON_ERROR_NONE) {
+                echo "ERRORRRRR";
+                throw new \Exception('Invalid JSON: ' . json_last_error_msg());
+            }
+            return $this->scrape($geminiGiftSuggestion);
+        } catch (\Exception $e) {
+            return response()->json([
+                'error' => 'An unexpected error occurred',
+                'message' => $e->getMessage(),
+            ], 500);
+        }
+    }
+};
