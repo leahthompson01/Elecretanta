@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\HobbyController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\SantaGroupController;
 use App\Http\Controllers\GiftController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
@@ -16,9 +17,8 @@ Route::get('/', function () {
     ]);
 });
 
-//buy gift exchange
-
 Route::middleware('auth')->group(function () {
+    Route::get('/giftExchange', [GiftController::class, 'index'])->name('giftExchange.index');
     Route::post('/giftExchange', [GiftController::class, 'store'])->name('giftExchange.store');
 });
 
@@ -34,6 +34,11 @@ Route::middleware(['auth', 'verified'])->group(function () {
 Route::get('/dashboard', function () {
     return Inertia::render('Dashboard');
 })->middleware(['auth', 'verified'])->name('dashboard');
+
+Route::middleware('auth')->group(function () {
+    Route::get('/santaGroup', [SantaGroupController::class, 'index'])->name('santaGroup.index');
+    Route::post('/santaGroup', [SantaGroupController::class, 'store'])->name('santaGroup.store');
+});
 
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');

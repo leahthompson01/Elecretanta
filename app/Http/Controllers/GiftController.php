@@ -25,7 +25,7 @@ class GiftController extends Controller
             'gifts' => 'required','array','max:500',
         ]);
 
-        GiftExchange::create(['user_id' => $request->user_id, 'gifts' => $validated['gifts']]);
+        GiftExchange::create(['user_id' => $request->user()->id, 'gifts' => $validated['gifts']]);
         return redirect()->route('giftExchange.index');
     }
 }
