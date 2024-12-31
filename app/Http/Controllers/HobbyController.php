@@ -4,43 +4,37 @@ namespace App\Http\Controllers;
 
 use App\Models\Hobby;
 use Illuminate\Http\Request;
-use Illuminate\Database\QueryException;
+use Inertia\Inertia;
 
 class HobbyController extends Controller
 {
-    public function createHobby(Request $request)
-{
-    $customMessages = [
-        'name.unique' => 'This hobby name is already taken. Please choose a different one.',
-    ];
 
-    // Validate input
-    $req_body = $request->validate([
-        "name" => ["required", "string", 'max:30'],
-    ], $customMessages);
+    public function index(){
+        return auth()->user()->hobbies;
+    }
+    public function store(Request $request){
+        $validated = $request->validate([
+            "hobby_name" => "required", "string"
+        ]);
 
-    try {
-        $createdHobby = Hobby::create(['name' => $req_body['name']]);
-        return response()->json($createdHobby, 201);
-    } catch (QueryException $e) {
-        // Check if it's a duplicate entry error
-        if ($e->getCode() == 23000) {
-            return response()->json([
-                'error' => "Failed to create hobby",
-                'message' => 'This hobby name is already taken. Please choose a different one.'
-            ], 400);
-        }
-        // Handle other types of exceptions
-        return response()->json([
-            'error' => "Failed to create hobby",
-            'message' => $e->getMessage()
-        ], 500);
+        return Hobby::create([
+            "hobby_name" => $validated['hobby_name'],
+            "user_id" => $request->user()->id,
+        ]);
+
+    }
+
+    public function update(Request $request, Hobby $hobby){
+        $validated = $request->validate([
+            "hobby_name" => "required", "string"
+        ]);
+
+        $hobby->update([
+            "hobby_name" => $validated['hobby_name'],
+        ]);
+    }
+    public function destroy(Request $request, Hobby $hobby){
+        $hobby->delete();
     }
 }
-    public function fetchAllHobbies(Request $request)
-    {
-        $hobbies = Hobby::all();
-        return response()->json($hobbies,200);
-    }
-       
-}
+

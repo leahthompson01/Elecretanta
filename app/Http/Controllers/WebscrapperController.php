@@ -236,6 +236,8 @@ class WebscrapperController extends Controller
      
         };
         $geminiGiftSuggestions = $queryGeminiLLM();
+
+        
         var_dump($geminiGiftSuggestions);
         if(is_array($geminiGiftSuggestions)){
             foreach($geminiGiftSuggestions as $giftSuggestion){

@@ -4,25 +4,20 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Notifications\Notifiable;
 
 class Hobby extends Model
 {
     /** @use HasFactory<\Database\Factories\HobbyFactory> */
-    use HasFactory;
-    protected $fillable = ['name'];
-    protected $keyType = 'string';
-    protected $primaryKey = 'name';
-    public $incrementing = false;
-    public $timestamps = false;
-    public function users()
-    {
-        return $this->belongsToMany(User::class);
-    }
+    use HasFactory, Notifiable;
+    protected $fillable = [
+        'hobby_name',
+        'user_id'
+    ];
 
-    protected function casts(): array 
+    public function user(): BelongsTo
     {
-        return [
-            'name' => 'string'
-        ];
+        return $this->belongsTo(User::class);
     }
 }
