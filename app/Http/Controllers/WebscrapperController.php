@@ -11,17 +11,12 @@ use ArrayObject;
 
 class WebscrapperController extends Controller
 {
-    public function scrape($geminiGiftSuggestions)
-    {   
-        $responseArray = [];
-        if(is_array($geminiGiftSuggestions)){
-            foreach ($geminiGiftSuggestions as $suggestion) {
-                $itemName = $suggestion['item'];
-                
+    public function scrape($giftSuggestion)
+    {          
                 try {
                     // Initialize Guzzle client
                     $client = new Client([
-                        'base_uri' => "https://www.walmart.com/search?q=$itemName",
+                        'base_uri' => "https://www.walmart.com/search?q=$giftSuggestion",
                         'timeout' => 10.0,
                         'connect_timeout' => 5.0,
                         'headers' => [
@@ -35,7 +30,9 @@ class WebscrapperController extends Controller
                     // Fetch all items
                     $response = $client->get('');
                     $body = $response->getBody()->getContents();
-        
+                    
+                   
+
                     // Initialize DomCrawler
                     $crawler = new Crawler($body);
                     $traversableItems = [];
@@ -46,15 +43,14 @@ class WebscrapperController extends Controller
                         $itemName = $node->text();
                         $href = $node->attr("href");
                         $substring = 'track';
-                        $imageURL = $crawler->filter("#is-0-productImage-$index")->attr("src", "");
-        
+                        $imageUrl = $crawler->filter("#is-0-productImage-$index")->attr("src", "");
                         if (str_contains($href, $substring) && $itemName !== '' && str_contains($itemName, "Sponsored") == false && str_contains($itemName, "Shop now") == false && str_contains($itemName, "Options") !== true) {
                             $traversableItems[] = [
                                 "itemName" => $itemName,
                                 "link" => $href,
                             ];
                         } else {
-                            $imageArray[] = $imageURL;
+                            $imageArray[] = $imageUrl;
                         }
         
                     });
@@ -63,39 +59,42 @@ class WebscrapperController extends Controller
                         $lastIndex = count($traversableItems) - 1; 
                         $index = 0;
                         foreach ($traversableItems as $product){
-                            foreach ($imageArray as $imageURL){
+                           
+                            foreach ($imageArray as $imageUrl){
+                          
                                 $itemNameString = preg_replace("/[^a-zA-Z0-9\s]|[!:]/", "", $product['itemName']);
                                 $itemNameArray = explode(" ", $itemNameString);
+                                
         
                                 
                                 
         
                                 switch (count($itemNameArray)){
                                     case 1:
-                                        if(str_contains($imageURL, $itemNameArray[0]) == true){
+                                        if(str_contains($imageUrl, $itemNameArray[0]) == true){
                                             
-                                            $traversableItems[$index]["imageUrl"] = $imageURL;
+                                            $traversableItems[$index]["imageUrl"] = $imageUrl;
                                         }
                                     break;
                                     case 2:
-                                        if(str_contains($imageURL, $itemNameArray[0]) == true && str_contains($imageURL, $itemNameArray[1]) == true ){
+                                        if(str_contains($imageUrl, $itemNameArray[0]) == true && str_contains($imageUrl, $itemNameArray[1]) == true ){
                                            
-                                            $traversableItems[$index]["imageUrl"] = $imageURL;
+                                            $traversableItems[$index]["imageUrl"] = $imageUrl;
                                         }
                                         
                                     //code block;
                                     break;
                                     case 3:
-                                        if(str_contains($imageURL, $itemNameArray[0]) == true && str_contains($imageURL, $itemNameArray[1]) == true && str_contains($imageURL, $itemNameArray[2]) == true ){
+                                        if(str_contains($imageUrl, $itemNameArray[0]) == true && str_contains($imageUrl, $itemNameArray[1]) == true && str_contains($imageUrl, $itemNameArray[2]) == true ){
                                          
-                                            $traversableItems[$index]["imageUrl"] = $imageURL;
+                                            $traversableItems[$index]["imageUrl"] = $imageUrl;
                                         }
                                     //code block
                                     break;
                                     default:
-                                        if(str_contains($imageURL, $itemNameArray[0]) == true && str_contains($imageURL, $itemNameArray[1]) == true && str_contains($imageURL, $itemNameArray[2]) == true && str_contains($imageURL, $itemNameArray[3]) == true ){
+                                        if(str_contains($imageUrl, $itemNameArray[0]) == true && str_contains($imageUrl, $itemNameArray[1]) == true && str_contains($imageUrl, $itemNameArray[2]) == true && str_contains($imageUrl, $itemNameArray[3]) == true ){
                                             
-                                            $traversableItems[$index]["imageUrl"] = $imageURL;
+                                            $traversableItems[$index]["imageUrl"] = $imageUrl;
                                         }
                                     //code block
                                 }
@@ -111,37 +110,74 @@ class WebscrapperController extends Controller
                     $itemPriceArray = [];
                         $pricesArray = new ArrayObject();
                          $crawler->filter('div > span')->each(function (Crawler $node, $i) use ( $pricesArray) {
+                            
                             $itemPrice = $node->text();
+                          
                             if(str_contains($itemPrice, "current price") == true){
                                 $itemPriceArray = explode(' ', $itemPrice);
                                 $lastIndex = count($itemPriceArray) - 1;
                                 $itemPrice = $itemPriceArray[$lastIndex];
                                 $pricesArray->append($itemPrice);
+                               
                             }
                             else {
+                            
                                 return;
                             }
                         });
                            // get and attach all prices
-                            foreach($pricesArray as $key => $itemValue) {
-                                $numberOfProducts = count($traversableItems) - 1;
-                                if($key <= $numberOfProducts){
-                                 
-                                    $traversableItems[$key]["price"] = $pricesArray[$key]; 
-                                    if($traversableItems[$key]['itemName'] !== '' && $traversableItems[$key]['link'] !== '' && $traversableItems[$key]['price'] !== '') {
-                                        echo "NOT NULL";
-                                    }   
-                        }
-                    };
+                           $numberOfProducts = count($traversableItems);
+                          
+                           if($numberOfProducts == 0){
+                         
+                           } else {
+                               foreach($pricesArray as $key => $itemValue) {
+                                   
+                                   $numberOfProducts = count($traversableItems) - 1;
+                                
+                                   if($numberOfProducts < 0){
+                                       
+                                       return;
+                                   } else {
+                                      
+                                       if($key <= $numberOfProducts){
+                                           $traversableItems[$key]["price"] = $pricesArray[$key]; 
+                                    
+                               } else {
+                             
+                               }
+   
+                                   }
+                       };
+                           }
                             // Return all anchor tags that contains the substring 'track' in the url link
                             // For Example https://www.walmart.com/track because all links that include the string 'track' is a commonality between purchaseable items found by query
                             // Also checking to see if any of the items have an empty name field if so dont return name with url (likely a url to another part of the website if this is true)
                             // IMPORTANT: Splitting each item's name into an array of strings and getting the first word of each itemNameArray to target items with valid urls instead of returning urls that may not be associated to an item!
-                      
+                        if($numberOfProducts == 0){
+                           
+                        } else {
+                            foreach($traversableItems as $key => $giftSuggestion){
+                    
+                       if(isset($giftSuggestion["imageUrl"]) == true) {
+                            
+                           
+                            return response()->json([
+                                "status" => "SUCCESS",
+                                "data" => $giftSuggestion,
+                            ]);
+
+                       } else {
+                        "WE STILL GOING";
+                       }
+                    }
+                        }
                     return response()->json([
-                        'message' => 'Scraping successful!',
-                        'data' => $traversableItems,
-                    ]);
+                        "status" => "SUCCESS",
+                        "data" => $traversableItems
+                    ], 500);
+                    
+                
                 } catch (RequestException $e) {
                     // Handle Guzzle exceptions
                     return response()->json([
@@ -159,31 +195,72 @@ class WebscrapperController extends Controller
             
 
             
-        } else {
-            echo "NOT AN ARRAY";
-        }
+       
         
-    }
+    
 
     public function generateGiftIdeas(Request $request){
-        try{
-            $response = Prism::text()->using(Provider::Gemini, "gemini-1.5-flash")->withPrompt(
-                "I am looking to gift an age appropriate gift for a 20 year old with a budget less than $20, and the person has the following interests: hoodies, sports, TV shows, Netflix, and ice cream. Please provide only a valid JSON array without any additional text or wrapping elements like code block markers or comments. The JSON should only include the data in array form with objects containing the keys `item` and `reason`. Do not add anything else.\n\nFor example:\n\n[\n    {\n        \"item\": \"Gift card for streaming service (Netflix etc.)\",\n        \"reason\": \"Appeals to their interest in TV shows and Netflix, and is easily adjustable to their budget.\"\n    },\n    {\n        \"item\": \"Sports-themed socks or small accessory\",\n        \"reason\": \"Relatively inexpensive and caters to their interest in sports.\"\n    }\n]"
-            )->generate();
+        try {
+            $allFoundGifts = new ArrayObject();
+
+            $queryGeminiLLM = function () {
+
+                for($x = 0; $x <= 5; $x++){
+                    echo "Attempt Number:", $x;
+                    $response = Prism::text()
+                    ->using(Provider::Gemini, "gemini-1.5-flash")
+                    ->withPrompt(
+                        "I am looking to gift an age appropriate gift for a 20 year old with a budget less than $150, and the person has the following interests: beach boys, sand castles, bacon, icecream, your mom. Please provide only a valid JSON array without any additional text or wrapping elements like code block markers or comments. Must contain seven unique gift ideas. The JSON should only include the data in array form with objects containing the keys `item` Do not add anything else.\n\nFor example:\n\n[\n    {\n        \"item\": \"Gift card for streaming service (Netflix etc.)\",\n        \"reason\": \"Appeals to their interest in TV shows and Netflix, and is easily adjustable to their budget.\"\n    },\n    {\n        \"item\": \"Sports-themed socks or small accessory\",\n        \"reason\": \"Relatively inexpensive and caters to their interest in sports.\"\n    }\n]"
+                    )->generate();
+                    $response = $response->text;
+                    $decodedResponse = json_decode($response, true);
+                   
+                    if (json_last_error() === JSON_ERROR_NONE) {
+                       echo "We got what we needed";
+                       
+                       return $decodedResponse;
+                       
+                    } elseif(json_last_error() !== JSON_ERROR_NONE && $x <= 5) {
+                        echo "Ahh shit here we go again";
+                       continue;
+                    } else {
+                        echo "WHOOPSIES";
+                    };
+            };
+            
+            
+           
+
+            
         
-            $response = $response->text;
-            $geminiGiftSuggestion = json_decode($response, true);
-                
-            if (json_last_error() !== JSON_ERROR_NONE) {
-                echo "ERRORRRRR";
-                throw new \Exception('Invalid JSON: ' . json_last_error_msg());
+     
+        };
+        $geminiGiftSuggestions = $queryGeminiLLM();
+        var_dump($geminiGiftSuggestions);
+        if(is_array($geminiGiftSuggestions)){
+            foreach($geminiGiftSuggestions as $giftSuggestion){
+
+                $result = $this->scrape($giftSuggestion['item']);
+                $content = $result->getContent();
+                $data = json_decode($content, true);
+                $arrayLength = count($data["data"]);
+                if($arrayLength > 0){
+                    $allFoundGifts->append($data["data"]);
+                } 
             }
-            return $this->scrape($geminiGiftSuggestion);
+        }
+       
+        return response()->json([
+            'message' => 'Scraping successful!',
+            "data" => $allFoundGifts
+        ]);
         } catch (\Exception $e) {
             return response()->json([
                 'error' => 'An unexpected error occurred',
                 'message' => $e->getMessage(),
             ], 500);
         }
+            
     }
+   
 };
