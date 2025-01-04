@@ -1,9 +1,13 @@
 import { Link } from "@inertiajs/react";
 import { useState } from "react";
+import { usePage } from "@inertiajs/react";
+
 
 export default function NavBar() {
     const [showingNavigationDropdown, setShowingNavigationDropdown] =
         useState(false);
+    const user = usePage().props.auth.user;
+    console.log(user);
 
     return (
         <nav className="bg-muted rounded-full flex justify-between items-center p-4 relative mb-12">
@@ -16,12 +20,17 @@ export default function NavBar() {
             <div className="hidden sm:flex gap-4 items-center">
                 <Link href="/">Home</Link>
                 <Link href="/about">About</Link>
-                <Link
-                    href="/login"
-                    className="bg-secondary text-white px-4 py-2 rounded-full"
-                >
-                    Login
-                </Link>
+                {user ? (
+
+                    <Link href="/Auth/logout">Log Out</Link>
+                    ) : (
+                    <Link
+                        href="/login"
+                        className="bg-secondary text-white px-4 py-2 rounded-full"
+                    >
+                        Login
+                    </Link>
+                )}
             </div>
 
             {/* Mobile Navigation Button */}
@@ -110,12 +119,17 @@ export default function NavBar() {
                         >
                             About
                         </Link>
-                        <Link
-                            href="/login"
-                            className="block px-4 py-2 text-white bg-secondary hover:opacity-90 rounded-md"
-                        >
-                            Login
-                        </Link>
+                        {user ? (
+                    <button>Log Out</button>
+                    ) : (
+                    <Link
+                        href="/login"
+                        className="bg-secondary text-white px-4 py-2 rounded-full"
+                    >
+                        Login
+                    </Link>
+                )}
+
                     </div>
                 </div>
             </div>
