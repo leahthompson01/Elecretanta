@@ -30,4 +30,4 @@ Route::post("/memberships/add", [MembershipsController::class,"addMembership"])-
 Route::get("/webscrapper", [WebscrapperController::class, "scrape"] ) ->name("webscrapper");
 
 Route::get("/generateGiftIdeas", [WebscrapperController::class, "generateGiftIdeas"] ) -> name("generateGiftIdeas");
-Route::get("/test", [WebscrapperController::class, "getGiftIdeas"] ) -> name("getGiftIdeas");
+Route::get("/generateGiftIdeasByImage", [WebscrapperController::class, "generateGiftIdeasByImage"] ) -> name("generateGiftIdeasByImage");

@@ -1,19 +1,23 @@
 <?php
 namespace App\Http\Controllers;
 
+use Exception;
 use Illuminate\Http\Request;
 use GuzzleHttp\Exception\RequestException;
 use GuzzleHttp\Client;
 use Symfony\Component\DomCrawler\Crawler;
 use EchoLabs\Prism\Prism;
 use EchoLabs\Prism\Enums\Provider;
+use EchoLabs\Prism\ValueObjects\Messages\UserMessage;
+use EchoLabs\Prism\ValueObjects\Messages\Support\Image;
 use ArrayObject;
 
 class WebscrapperController extends Controller
 {
     public function scrape($giftSuggestion)
     {          
-                try {
+        try {
+                    
                     // Initialize Guzzle client
                     $client = new Client([
                         'base_uri' => "https://www.walmart.com/search?q=$giftSuggestion",
@@ -26,6 +30,8 @@ class WebscrapperController extends Controller
                         ],
                         'verify' => false, // Disable SSL verification
                     ]);
+
+
                     
                     // fetching html doc using client
                     $response = $client->get('');
@@ -33,6 +39,7 @@ class WebscrapperController extends Controller
                     
                     // Initialize DomCrawler and passing current html doc into it so we can start searching for data
                     $crawler = new Crawler($body);
+
                     $traversableItems = [];
                     $imageArray = [];
         
@@ -143,6 +150,7 @@ class WebscrapperController extends Controller
                            
                         } else {
                             foreach($traversableItems as $key => $giftSuggestion){
+                             
                     
                        if(isset($giftSuggestion["imageUrl"]) == true) {
                             
@@ -169,14 +177,14 @@ class WebscrapperController extends Controller
                         'error' => 'Request failed',
                         'message' => $e->getMessage(),
                     ], 500);
-                } catch (\Exception $e) {
+                } catch (Exception $e) {
                     // Handle other exceptions
                     return response()->json([
                         'error' => 'An unexpected error occurred',
                         'message' => $e->getMessage(),
                     ], 500);
                 }
-            }
+        }
             
 
             
@@ -195,9 +203,10 @@ class WebscrapperController extends Controller
                     $response = Prism::text()
                     ->using(Provider::Gemini, "gemini-1.5-flash")
                     ->withPrompt(
-                       ""
+                       "I am looking to gift an age appropriate gift for a 20 year old with a budget less than $150, and the person has the following interests: beach boys, sand castles, bacon, icecream, your mom. Please provide only a valid JSON array without any additional text or wrapping elements like code block markers or comments. Must contain seven unique gift ideas. The JSON should only include the data in array form with objects containing the keys `item` Do not add anything else.\n\nFor example:\n\n[\n    {\n        \"item\": \"Gift card for streaming service (Netflix etc.)\",\n        \"reason\": \"Appeals to their interest in TV shows and Netflix, and is easily adjustable to their budget.\"\n    },\n    {\n        \"item\": \"Sports-themed socks or small accessory\",\n        \"reason\": \"Relatively inexpensive and caters to their interest in sports.\"\n    }\n]"
                     )->generate();
                     $response = $response->text;
+       
                     $decodedResponse = json_decode($response, true);
                    
                     if (json_last_error() === JSON_ERROR_NONE) {
@@ -268,13 +277,71 @@ class WebscrapperController extends Controller
             'message' => 'Scraping successful!',
             "data" => $allFoundGifts
         ]);
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             return response()->json([
                 'error' => 'An unexpected error occurred',
                 'message' => $e->getMessage(),
             ], 500);
         }
             
+    }
+
+    public function generateGiftIdeasByImage(Request $request) {
+        try {
+            
+            $message = new UserMessage(
+                'I am looking to gift an age appropriate gift for a 20 year old with a budget less than $150, and the person has the following interests: beach boys, sand castles, bacon, icecream, your mom. Please provide only a valid JSON array without any additional text or wrapping elements like code block markers or comments. Must contain 2 unique gift ideas. And ensure there are no strings within a string in your response. The JSON should only include the data in array form with objects containing the keys `item` Do not add anything else.\n\nFor example:\n\n[\n    {\n        \"item\": \"Gift card for streaming service (Netflix etc.)\",\n        \"reason\": \"Appeals to their interest in TV shows and Netflix, and is easily adjustable to their budget.\"\n    },\n    {\n        \"item\": \"Sports-themed socks or small accessory\",\n        \"reason\": \"Relatively inexpensive and caters to their interest in sports.\"\n    }\n]',
+                [Image::fromUrl($request->url, mimeType: "image/jpeg")]
+            );
+            
+       
+                $response = Prism::text()
+                ->using(Provider::Gemini, "gemini-1.5-flash")
+                ->withMessages([$message])
+                ->generate();
+                $responseText = $response->text;
+                // example response;
+                // "```json
+                // [
+                //     {
+                //         "item": "Beach Boys concert tickets"
+                //     },
+                //     {
+                //         "item": "Gourmet bacon gift basket"
+                //     }
+                // ]
+                // ```
+
+                $cleanedResponse = str_replace("`", "", $responseText );
+                $cleanedResponse = preg_replace('/^json\s*/', '', $cleanedResponse);
+               
+                $decodedResponse = json_decode($cleanedResponse, true);
+            
+                if (json_last_error() === JSON_ERROR_NONE) {
+                    echo "AN ERROR DIDNT OCCUR";
+                    return response()->json([
+                        "status" => "Success",
+                        "giftSuggestions" => $decodedResponse,
+                    ]);
+
+                } elseif(json_last_error() !== JSON_ERROR_NONE) {
+                    return response()->json([
+                        "status" => "An Error Occurred",
+                        "data" =>json_last_error(),
+                    ], 500);
+                   
+
+                } else {
+                    return null;
+                };
+                
+        
+        } catch (Exception $e) {
+            return response()->json([
+                "status" => "An Error Occurred",
+                "data" =>$e->getMessage(),
+            ], 500);
+        }
     }
    
 };
