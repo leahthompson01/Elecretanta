@@ -36,6 +36,7 @@ class WebscrapperController extends Controller
                     // fetching html doc using client
                     $response = $client->get('');
                     $body = $response->getBody()->getContents();
+                    var_dump($body);
                     
                     // Initialize DomCrawler and passing current html doc into it so we can start searching for data
                     $crawler = new Crawler($body);
@@ -241,29 +242,30 @@ class WebscrapperController extends Controller
         
         $geminiGiftSuggestions = $queryGeminiLLM();
         if($geminiGiftSuggestions == null){
-            echo "SHIT ITS NULL BOYS";
             $userHobbies = $queryUserHobbies(); 
             foreach($userHobbies as $hobby){
-    
+                
                 $result = $this->scrape($hobby);
                 $content = $result->getContent();
                 $data = json_decode($content, true);
                 $arrayLength = count($data["data"]);
                 if($arrayLength > 0){
                     $allFoundGifts->append($data["data"]);
-                } 
+                }
+                usleep(rand(1000000, 5000000)); 
             }
         } else {
             if(is_array($geminiGiftSuggestions)){
                 foreach($geminiGiftSuggestions as $giftSuggestion){
-    
+                    
                     $result = $this->scrape($giftSuggestion['item']);
                     $content = $result->getContent();
                     $data = json_decode($content, true);
                     $arrayLength = count($data["data"]);
                     if($arrayLength > 0){
                         $allFoundGifts->append($data["data"]);
-                    } 
+                    }
+                    usleep(rand(1000000, 5000000)); 
                 }
             }
         }
