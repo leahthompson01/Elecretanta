@@ -10,6 +10,7 @@ use EchoLabs\Prism\Prism;
 use EchoLabs\Prism\Enums\Provider;
 use EchoLabs\Prism\ValueObjects\Messages\UserMessage;
 use EchoLabs\Prism\ValueObjects\Messages\Support\Image;
+use EchoLabs\Prism\Exceptions\PrismException;
 use ArrayObject;
 
 class WebscrapperController extends Controller
@@ -204,7 +205,7 @@ class WebscrapperController extends Controller
                     $response = Prism::text()
                     ->using(Provider::Gemini, "gemini-1.5-flash")
                     ->withPrompt(
-                       "I am looking to gift an age appropriate gift for a 20 year old with a budget less than $150, and the person has the following interests: beach boys, sand castles, bacon, icecream, your mom. Please provide only a valid JSON array without any additional text or wrapping elements like code block markers or comments. Must contain seven unique gift ideas. The JSON should only include the data in array form with objects containing the keys `item` Do not add anything else.\n\nFor example:\n\n[\n    {\n        \"item\": \"Gift card for streaming service (Netflix etc.)\",\n        \"reason\": \"Appeals to their interest in TV shows and Netflix, and is easily adjustable to their budget.\"\n    },\n    {\n        \"item\": \"Sports-themed socks or small accessory\",\n        \"reason\": \"Relatively inexpensive and caters to their interest in sports.\"\n    }\n]"
+                       "I am looking to gift an age appropriate gift for a 20 year old with a budget less than $150, and the person has the following interests: beach boys, sand castles, bacon, icecream, your mom. Please provide only a valid JSON array without any additional text or wrapping elements like code block markers or comments. Must contain 3 unique gift ideas. The JSON should only include the data in array form with objects containing the keys `item` Do not add anything else.\n\nFor example:\n\n[\n    {\n        \"item\": \"Gift card for streaming service (Netflix etc.)\",\n        \"reason\": \"Appeals to their interest in TV shows and Netflix, and is easily adjustable to their budget.\"\n    },\n    {\n        \"item\": \"Sports-themed socks or small accessory\",\n        \"reason\": \"Relatively inexpensive and caters to their interest in sports.\"\n    }\n]"
                     )->generate();
                     $response = $response->text;
        
@@ -252,7 +253,7 @@ class WebscrapperController extends Controller
                 if($arrayLength > 0){
                     $allFoundGifts->append($data["data"]);
                 }
-                usleep(rand(1000000, 5000000)); 
+               
             }
         } else {
             if(is_array($geminiGiftSuggestions)){
@@ -265,7 +266,7 @@ class WebscrapperController extends Controller
                     if($arrayLength > 0){
                         $allFoundGifts->append($data["data"]);
                     }
-                    usleep(rand(1000000, 5000000)); 
+                
                 }
             }
         }
@@ -301,7 +302,9 @@ class WebscrapperController extends Controller
                 ->using(Provider::Gemini, "gemini-1.5-flash")
                 ->withMessages([$message])
                 ->generate();
+              
                 $responseText = $response->text;
+            
                 // example response;
                 // "```json
                 // [
@@ -313,7 +316,7 @@ class WebscrapperController extends Controller
                 //     }
                 // ]
                 // ```
-
+               
                 $cleanedResponse = str_replace("`", "", $responseText );
                 $cleanedResponse = preg_replace('/^json\s*/', '', $cleanedResponse);
                
@@ -343,6 +346,9 @@ class WebscrapperController extends Controller
                 "status" => "An Error Occurred",
                 "data" =>$e->getMessage(),
             ], 500);
+        } catch (PrismException $e) {
+            response()->json(["message"=> $e->getMessage()]
+               );
         }
     }
    
