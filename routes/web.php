@@ -24,7 +24,7 @@ Route::middleware('auth')->group(function () {
 
 Route::middleware(['auth', 'verified'])->group(function () {
    Route::get('/hobby', function () {
-    return Inertia::render('Hobby', ['hobbies' => HobbyController::class, 'index']);
+    return Inertia::render('Hobbies', ['hobbies' => HobbyController::class, 'index']);
    })->name('hobby.index');
 
    Route::post('/hobby', [HobbyController::class, 'store'])->name('hobby.store');
