@@ -31,16 +31,26 @@ export default function Login({ status, canResetPassword }) {
                 </div>
             )}
 
+            {/* Login heading */}
+            <div className="w-11/12 md:w-1/2 mx-auto">
+                <h1 className="font-baskerville text-4xl mb-8">Login</h1>
+            </div>
+
+            {/* Email field */}
             <form onSubmit={submit}>
-                <div>
-                    <InputLabel htmlFor="email" value="Email" />
+                <div className="mt-2 space-y-2">
+                    <InputLabel
+                        htmlFor="email"
+                        value="Your Email"
+                        className="text-center md:text-center sm:text-center text-3xl block w-full font-baskerville"
+                    />
 
                     <TextInput
                         id="email"
                         type="email"
                         name="email"
                         value={data.email}
-                        className="mt-1 block w-full"
+                        className="mt-1 block w-11/12 md:w-1/2 mx-auto bg-[#F2E8CF] text-center font-bold"
                         autoComplete="username"
                         isFocused={true}
                         onChange={(e) => setData("email", e.target.value)}
@@ -48,16 +58,20 @@ export default function Login({ status, canResetPassword }) {
 
                     <InputError message={errors.email} className="mt-2" />
                 </div>
-
-                <div className="mt-4">
-                    <InputLabel htmlFor="password" value="Password" />
+                {/* Password field */}
+                <div className="mt-4 space-y-2">
+                    <InputLabel
+                        htmlFor="password"
+                        value="Your Password"
+                        className="text-center md:text-center sm:text-center text-3xl block w-full font-baskerville"
+                    />
 
                     <TextInput
                         id="password"
                         type="password"
                         name="password"
                         value={data.password}
-                        className="mt-1 block w-full"
+                        className="mt-1 block w-11/12 md:w-1/2 mx-auto bg-[#F2E8CF] text-center font-bold"
                         autoComplete="current-password"
                         onChange={(e) => setData("password", e.target.value)}
                     />
@@ -65,34 +79,26 @@ export default function Login({ status, canResetPassword }) {
                     <InputError message={errors.password} className="mt-2" />
                 </div>
 
-                <div className="mt-4 block">
-                    <label className="flex items-center">
-                        <Checkbox
-                            name="remember"
-                            checked={data.remember}
-                            onChange={(e) =>
-                                setData("remember", e.target.checked)
-                            }
-                        />
-                        <span className="ms-2 text-sm text-gray-600">
-                            Remember me
-                        </span>
-                    </label>
-                </div>
+                {/* Log in Button */}
+                <div className="w-11/12 md:w-3/4 mx-auto mt-20">
+                    <div className="flex justify-center md:justify-start md:ml-32">
+                        <PrimaryButton className="font-baskerville normal-case text-xl tracking-normal w-full md:w-1/4 flex justify-center items-center" disabled={processing}>
+                            Login
+                        </PrimaryButton>
+                    </div>
 
-                <div className="mt-4 flex items-center justify-end">
-                    {canResetPassword && (
-                        <Link
-                            href={route("password.request")}
-                            className="rounded-md text-sm text-gray-600 underline hover:text-gray-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
-                        >
-                            Forgot your password?
-                        </Link>
-                    )}
-
-                    <PrimaryButton className="ms-4" disabled={processing}>
-                        Log in
-                    </PrimaryButton>
+                    {/* Don't have an account link */}
+                    <div className="mt-6 flex justify-center w-full">
+                        {canResetPassword && (
+                            <Link
+                                href={route("password.request")}
+                                className="text-xl md:text-2xl text-gray-600 hover:text-gray-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+                            >
+                                Don't have an account?{" "}
+                                <span className="underline">Sign up here.</span>
+                            </Link>
+                        )}
+                    </div>
                 </div>
             </form>
         </GuestLayout>
