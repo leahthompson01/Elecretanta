@@ -399,7 +399,7 @@ class WebscrapperController extends Controller
                         "status" => "Success",
                         "data" => $allFoundGifts,
                     ]);
-                    // if an error occurred during decoding return the error messsage
+                
                 } else {
                     return response()->json([
                         "status" => "Success",
