@@ -95,7 +95,7 @@ class WebscrapperController extends Controller
                                 $itemNameString = preg_replace("/[^a-zA-Z0-9\s]|[!:]/", "", $product['itemName']);
                                 $itemNameArray = explode(" ", $itemNameString);
                             
-                                // Currently only trying to match items to urls with a maximum precision of four words or less currently
+                                // Match items to urls with a maximum precision of four words or less 
                                 switch (count($itemNameArray)){
                                     
                                     case 1:
@@ -185,24 +185,24 @@ class WebscrapperController extends Controller
 
                     if(count($traversableItems) >= 1){
                         foreach($traversableItems as $foundItem) {
-                           
+                            // checks to see if an gift has all the required fields to display on the frontend
                             if($foundItem["imageUrl"] != "" && $foundItem["link"] != "" && $foundItem["itemName"] != ""){
                                 return response()->json([
-                                    "status" => "SUCCESS",
+                                    "status" => "Success",
                                     "data" => $foundItem
                                 ], 200);
                             } else {
                                 return response()->json([
-                                    "status"=> "No Item Could Be found",
+                                    "status"=> "No Item Could Be found with all the required fields",
                                     "data" => []
-                                ]);
+                                ], 501);
                             }
                         }
                     } else {
                         return response()->json([
-                            "status"=> "No Item Could Be found",
+                            "status"=> "No Items were found",
                             "data" => []
-                        ]);
+                        ], 501);
                     }
                     
                     
@@ -231,11 +231,11 @@ class WebscrapperController extends Controller
 
     public function generateGiftIdeas(Request $request){
             // $userHobbies = auth()->user()->hobbies();
-            // echo "user_hobbies: ", var_dump($userHobbies), PHP_EOL;
+
         try {
             
             $allFoundGifts = new ArrayObject();
-
+            // Get Gift Ideas from LLM Model
             $queryGeminiLLM = function () {
 
                 for($x = 0; $x <= 5; $x++){
@@ -268,11 +268,13 @@ class WebscrapperController extends Controller
         };
 
 
-        
+        // Store Suggestions Here
         $geminiGiftSuggestions = $queryGeminiLLM();
-        // echo "GEMINI GIFT SUGGESTIONS", var_dump($geminiGiftSuggestions);
-        var_dump($geminiGiftSuggestions);
+
+ 
+        
         if($geminiGiftSuggestions == null){
+            // Here we will get hobbies from the user and iterate over each one to generate less specific gift ideas
             $userHobbies = ["basketball", "pingpong, trivia"];
             foreach($userHobbies as $hobby){
                 
@@ -286,6 +288,7 @@ class WebscrapperController extends Controller
                
             }
         } else {
+            // So if gemini's gift suggestions are an array than iterate each suggestion and attempt to retrieve a gift for each suggestion
             if(is_array($geminiGiftSuggestions)){
                 foreach($geminiGiftSuggestions as $giftSuggestion){
            
@@ -301,15 +304,10 @@ class WebscrapperController extends Controller
             }
         }
         
-
-
-
-        
-       
         return response()->json([
-            'message' => 'Scraping successful!',
+            'message' => 'Success',
             "data" => $allFoundGifts
-        ]);
+        ], 200);
         } catch (Exception $e) {
             return response()->json([
                 'error' => 'An unexpected error occurred',
@@ -320,14 +318,14 @@ class WebscrapperController extends Controller
     }
 
     public function generateGiftIdeasByImage(Request $request) {
-    
+        // Image url must end in a .svg or .jpg to work
         $imageUrl = $request -> imageUrl;
         $userHobbies = ["basketball"];
         // $userHobbies = auth()->user()->hobbies();
         $allFoundGifts = new ArrayObject();
   
         try {
-            
+            // will need to add dynamic fields in prompt
             $message = new UserMessage(
                 'I am looking to gift an age appropriate gift for a 20 year old with a budget less than $150, Please genearte 4 unique gift ideas based on the image that can be bought on walmart.com Please provide only a valid JSON array without any additional text or wrapping elements like code block markers or comments. Must contain 4 unique gift ideas with providing no more than 2 words. And ensure there are no strings within a string in your response. The JSON should only include the data in array form with objects containing the keys `item` Do not add anything else.\n\nFor example:\n\n[\n    {\n        \"item\": \"Gift card for streaming service (Netflix etc.)\",\n        \"reason\": \"Appeals to their interest in TV shows and Netflix, and is easily adjustable to their budget.\"\n    },\n    {\n        \"item\": \"Sports-themed socks or small accessory\",\n        \"reason\": \"Relatively inexpensive and caters to their interest in sports.\"\n    }\n]',
                 [Image::fromUrl($request->imageUrl, mimeType: "image/jpeg")]
@@ -341,17 +339,6 @@ class WebscrapperController extends Controller
               
                 $responseText = $response->text;
             
-            
-            // $decodedResponse = [
-            //     [
-            //         "item" => "Videogames"
-            //     ],
-            //     [
-            //         "item" => "Gourmet bacon gift basket"
-            //     ]
-            // ];
-
-
 
             //EXAMPLE RESPONSE 
                 // "```json
@@ -364,37 +351,47 @@ class WebscrapperController extends Controller
                 //     }
                 // ]
                 // ```
+                // With the example above it will cause an error if you try to tranform the stringified json into a php value without firstly removing the surrounding ""```
+                $parsedResponse = str_replace("`", "", $responseText );
+                $parsedResponse = preg_replace('/^json\s*/', '', $parsedResponse);
                
-                $cleanedResponse = str_replace("`", "", $responseText );
-                $cleanedResponse = preg_replace('/^json\s*/', '', $cleanedResponse);
-               
-                $decodedResponse = json_decode($cleanedResponse, true);
+                $decodedResponse = json_decode($parsedResponse, true);
+                // Checks if an error occured during decoding 
                 if (json_last_error() === JSON_ERROR_NONE) {
-              
+                    // no error occured during decoding
                     foreach($decodedResponse as $giftSuggestion){
 
                         echo $giftSuggestion['item'];
                      
                         $result = $this->scrape($giftSuggestion['item']);
                         $content = $result->getContent();
-                        var_dump($content);
+                        
                         $data = json_decode($content, true);
-                        var_dump($data);
-                        $arrayLength = count($data["data"]);
-                        if($arrayLength > 0){
+                      
+
+                        
+                        
+                        
+                        // ensures at least one item was found if not it will not append an empty object too the allFoundGifts Array
+                        if(count($data["data"]) > 0){
+                            
+                           
                             $allFoundGifts->append($data["data"]);
-                        }
-                    
+                       
+                        } 
+      
                     }
+                    // If the Gemini gift suggestions -> scrapping doesnt generate a gift  we will take the users hobbies and get generic gifts
+                   
                     if(count($allFoundGifts) < 1){
-                            echo "WE ARE IN HERE";
                         foreach($userHobbies as $hobby){
                 
                             $result = $this->scrape($hobby);
                             $content = $result->getContent();
+                            
                             $data = json_decode($content, true);
-                            $arrayLength = count($data["data"]);
-                            if($arrayLength > 0){
+                           
+                            if($data["data"] !== []){
                                 $allFoundGifts->append($data["data"]);
                             }
                     };
@@ -402,19 +399,15 @@ class WebscrapperController extends Controller
                         "status" => "Success",
                         "data" => $allFoundGifts,
                     ]);
-
-                } elseif(json_last_error() !== JSON_ERROR_NONE) {
-                    return response()->json([
-                        "status" => "An Error Occurred",
-                        "data" =>json_last_error(),
-                    ], 500);
-                   
-
+                    // if an error occurred during decoding return the error messsage
                 } else {
-                    return null;
-                };
-                
-            };
+                    return response()->json([
+                        "status" => "Success",
+                        "data" => $allFoundGifts
+                    
+                    ], 200);
+                }
+            }
         } catch (Exception $e) {
             return response()->json([
                 "status" => "An Error Occurred",
