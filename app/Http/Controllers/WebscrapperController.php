@@ -17,7 +17,7 @@ class WebscrapperController extends Controller
 {
     public function scrape($giftSuggestion)
     {    
-
+   
         try {
                     
                     // Initialize Guzzle client
@@ -38,10 +38,14 @@ class WebscrapperController extends Controller
                     // fetching html doc using client
                     $response = $client->get('');
                     $body = $response->getBody()->getContents();
+
+                 
                    
                     
                     // Initialize DomCrawler and passing current html doc into it so we can start searching for data
                     $crawler = new Crawler($body);
+
+              
 
                     $traversableItems = [];
                     $imageArray = [];
@@ -50,12 +54,25 @@ class WebscrapperController extends Controller
                             // For Example https://www.walmart.com/track because all links that include the string 'track' is a commonality between purchaseable items found by query
                             // Also checking to see if any of the items have an empty name field if so dont return name with url (likely a url to another part of the website if this is true)
                     $crawler->filter('a')->each(function (Crawler $node, $index) use (&$traversableItems, &$imageArray, $crawler) {
+                        
                         $itemName = $node->text();
-                        // echo "ITEM NAME: ", $itemName;
+                     
                         $href = $node->attr("href");
                         $substring = 'track';
+                        $secondarySubString = "ip";
+
                         $imageUrl = $crawler->filter("#is-0-productImage-$index")->attr("src", "");
-                        if (str_contains($href, $substring) && $itemName !== '' && str_contains($itemName, "Sponsored") == false && str_contains($itemName, "Shop now") == false && str_contains($itemName, "Options") !== true) {
+                        
+                        if (
+                            str_contains($href, $substring) && $itemName !== '' 
+                            && 
+                            str_contains($itemName, "Sponsored") == false 
+                            && 
+                            str_contains($itemName, "Shop now") == false 
+                            && 
+                            str_contains($itemName, "Options") !== true
+                            ) {
+                               
                             $traversableItems[] = [
                                 "itemName" => $itemName,
                                 "link" => $href,
@@ -69,21 +86,21 @@ class WebscrapperController extends Controller
                      // IMPORTANT: Splitting each item's name into an array of strings and getting the first word of each itemNameArray to target items with valid urls instead of returning urls that may not be associated to an item!
                     if (count($traversableItems) > 1 && count($imageArray) > 1) {
                         $index = 0;
+                     
                         foreach ($traversableItems as $product){
                            
                             foreach ($imageArray as $imageUrl){
+
                                 // removing undesired characters such as ": !" which is commonly found in product names because urls dont contain these characters and can lead to inconsistent results
                                 $itemNameString = preg_replace("/[^a-zA-Z0-9\s]|[!:]/", "", $product['itemName']);
                                 $itemNameArray = explode(" ", $itemNameString);
-                                
-        
-                                
-                                
+                            
                                 // Currently only trying to match items to urls with a maximum precision of four words or less currently
                                 switch (count($itemNameArray)){
+                                    
                                     case 1:
                                         if(str_contains($imageUrl, $itemNameArray[0]) == true){
-                                            
+                                           
                                             $traversableItems[$index]["imageUrl"] = $imageUrl;
                                         }
                                     break;
@@ -165,14 +182,29 @@ class WebscrapperController extends Controller
                     //    } else {
                     //     "WE STILL GOING";
                     //    }
-                    foreach($traversableItems as $foundItem) {
-                        if($foundItem["imageUrl"] != "" && $foundItem["link"] != "" && $foundItem["itemName"] != ""){
-                            return response()->json([
-                                "status" => "SUCCESS",
-                                "data" => $foundItem
-                            ], 200);
+
+                    if(count($traversableItems) >= 1){
+                        foreach($traversableItems as $foundItem) {
+                           
+                            if($foundItem["imageUrl"] != "" && $foundItem["link"] != "" && $foundItem["itemName"] != ""){
+                                return response()->json([
+                                    "status" => "SUCCESS",
+                                    "data" => $foundItem
+                                ], 200);
+                            } else {
+                                return response()->json([
+                                    "status"=> "No Item Could Be found",
+                                    "data" => []
+                                ]);
+                            }
                         }
+                    } else {
+                        return response()->json([
+                            "status"=> "No Item Could Be found",
+                            "data" => []
+                        ]);
                     }
+                    
                     
                     
                 
@@ -198,7 +230,10 @@ class WebscrapperController extends Controller
     
 
     public function generateGiftIdeas(Request $request){
+            // $userHobbies = auth()->user()->hobbies();
+            // echo "user_hobbies: ", var_dump($userHobbies), PHP_EOL;
         try {
+            
             $allFoundGifts = new ArrayObject();
 
             $queryGeminiLLM = function () {
@@ -208,11 +243,15 @@ class WebscrapperController extends Controller
                     $response = Prism::text()
                     ->using(Provider::Gemini, "gemini-1.5-flash")
                     ->withPrompt(
-                       "I am looking to gift an age appropriate gift for a 20 year old with a budget less than $150, and the person has the following interests: beach boys, sand castles, bacon, icecream, your mom. Please provide only a valid JSON array without any additional text or wrapping elements like code block markers or comments. Must contain 3 unique gift ideas. The JSON should only include the data in array form with objects containing the keys `item` Do not add anything else.\n\nFor example:\n\n[\n    {\n        \"item\": \"Gift card for streaming service (Netflix etc.)\",\n        \"reason\": \"Appeals to their interest in TV shows and Netflix, and is easily adjustable to their budget.\"\n    },\n    {\n        \"item\": \"Sports-themed socks or small accessory\",\n        \"reason\": \"Relatively inexpensive and caters to their interest in sports.\"\n    }\n]"
+                       "I am looking to gift an age appropriate gift for a 20 year old with a budget less than $150, and the person has the following interests: hiking, running, sleeping, eating, videogames. Please provide only a valid JSON array without any additional text or wrapping elements like code block markers or comments. Must contain 4 unique gift ideas. The JSON should only include the data in array form with objects containing the keys `item` Do not add anything else.\n\nFor example:\n\n[\n    {\n        \"item\": \"Gift card for streaming service (Netflix etc.)\",\n        \"reason\": \"Appeals to their interest in TV shows and Netflix, and is easily adjustable to their budget.\"\n    },\n    {\n        \"item\": \"Sports-themed socks or small accessory\",\n        \"reason\": \"Relatively inexpensive and caters to their interest in sports.\"\n    }\n]"
                     )->generate();
-                    $response = $response->text;
+
+                    $responseText = $response->text;
        
-                    $decodedResponse = json_decode($response, true);
+                    $parsedResponse = str_replace("`", "", $responseText );
+                    $parsedResponse = preg_replace('/^json\s*/', '', $parsedResponse);
+                
+                    $decodedResponse = json_decode($parsedResponse, true);
                    
                     if (json_last_error() === JSON_ERROR_NONE) {
                        
@@ -226,27 +265,15 @@ class WebscrapperController extends Controller
                         return null;
                     };
             };
-            
-            
-           
-
-            
-        
-     
         };
 
 
-        $queryUserHobbies = function() {
-            // logic to fetch user hobbies
-
-            $exampleArray = ["Basketball", "tea", "dogs", "cars"];
-            return $exampleArray;
-        };
-        
         
         $geminiGiftSuggestions = $queryGeminiLLM();
+        // echo "GEMINI GIFT SUGGESTIONS", var_dump($geminiGiftSuggestions);
+        var_dump($geminiGiftSuggestions);
         if($geminiGiftSuggestions == null){
-            $userHobbies = $queryUserHobbies(); 
+            $userHobbies = ["basketball", "pingpong, trivia"];
             foreach($userHobbies as $hobby){
                 
                 $result = $this->scrape($hobby);
@@ -261,7 +288,7 @@ class WebscrapperController extends Controller
         } else {
             if(is_array($geminiGiftSuggestions)){
                 foreach($geminiGiftSuggestions as $giftSuggestion){
-                    
+           
                     $result = $this->scrape($giftSuggestion['item']);
                     $content = $result->getContent();
                     $data = json_decode($content, true);
@@ -293,32 +320,40 @@ class WebscrapperController extends Controller
     }
 
     public function generateGiftIdeasByImage(Request $request) {
+    
+        $imageUrl = $request -> imageUrl;
+        $userHobbies = ["basketball"];
+        // $userHobbies = auth()->user()->hobbies();
         $allFoundGifts = new ArrayObject();
-        
+  
         try {
             
-            // $message = new UserMessage(
-            //     'I am looking to gift an age appropriate gift for a 20 year old with a budget less than $150, and the person has the following interests: beach boys, sand castles, bacon, icecream, your mom. Please provide only a valid JSON array without any additional text or wrapping elements like code block markers or comments. Must contain 2 unique gift ideas. And ensure there are no strings within a string in your response. The JSON should only include the data in array form with objects containing the keys `item` Do not add anything else.\n\nFor example:\n\n[\n    {\n        \"item\": \"Gift card for streaming service (Netflix etc.)\",\n        \"reason\": \"Appeals to their interest in TV shows and Netflix, and is easily adjustable to their budget.\"\n    },\n    {\n        \"item\": \"Sports-themed socks or small accessory\",\n        \"reason\": \"Relatively inexpensive and caters to their interest in sports.\"\n    }\n]',
-            //     [Image::fromUrl($request->url, mimeType: "image/jpeg")]
-            // );
+            $message = new UserMessage(
+                'I am looking to gift an age appropriate gift for a 20 year old with a budget less than $150, Please genearte 4 unique gift ideas based on the image that can be bought on walmart.com Please provide only a valid JSON array without any additional text or wrapping elements like code block markers or comments. Must contain 4 unique gift ideas with providing no more than 2 words. And ensure there are no strings within a string in your response. The JSON should only include the data in array form with objects containing the keys `item` Do not add anything else.\n\nFor example:\n\n[\n    {\n        \"item\": \"Gift card for streaming service (Netflix etc.)\",\n        \"reason\": \"Appeals to their interest in TV shows and Netflix, and is easily adjustable to their budget.\"\n    },\n    {\n        \"item\": \"Sports-themed socks or small accessory\",\n        \"reason\": \"Relatively inexpensive and caters to their interest in sports.\"\n    }\n]',
+                [Image::fromUrl($request->imageUrl, mimeType: "image/jpeg")]
+            );
             
        
-            //     $response = Prism::text()
-            //     ->using(Provider::Gemini, "gemini-1.5-flash")
-            //     ->withMessages([$message])
-            //     ->generate();
+                $response = Prism::text()
+                ->using(Provider::Gemini, "gemini-1.5-flash")
+                ->withMessages([$message])
+                ->generate();
               
-            //     $responseText = $response->text;
+                $responseText = $response->text;
             
             
-            $decodedResponse = [
-                [
-                    "item" => "Videogames"
-                ],
-                [
-                    "item" => "Gourmet bacon gift basket"
-                ]
-            ];
+            // $decodedResponse = [
+            //     [
+            //         "item" => "Videogames"
+            //     ],
+            //     [
+            //         "item" => "Gourmet bacon gift basket"
+            //     ]
+            // ];
+
+
+
+            //EXAMPLE RESPONSE 
                 // "```json
                 // [
                 //     {
@@ -330,27 +365,39 @@ class WebscrapperController extends Controller
                 // ]
                 // ```
                
-                // $cleanedResponse = str_replace("`", "", $responseText );
-                // $cleanedResponse = preg_replace('/^json\s*/', '', $cleanedResponse);
+                $cleanedResponse = str_replace("`", "", $responseText );
+                $cleanedResponse = preg_replace('/^json\s*/', '', $cleanedResponse);
                
-                // $decodedResponse = json_decode($cleanedResponse, true);
-            
+                $decodedResponse = json_decode($cleanedResponse, true);
                 if (json_last_error() === JSON_ERROR_NONE) {
-                    
+              
                     foreach($decodedResponse as $giftSuggestion){
-                    
+
+                        echo $giftSuggestion['item'];
+                     
                         $result = $this->scrape($giftSuggestion['item']);
                         $content = $result->getContent();
-                        // echo var_dump($content), PHP_EOL;
-                    
+                        var_dump($content);
                         $data = json_decode($content, true);
-                        
+                        var_dump($data);
                         $arrayLength = count($data["data"]);
                         if($arrayLength > 0){
                             $allFoundGifts->append($data["data"]);
                         }
                     
                     }
+                    if(count($allFoundGifts) < 1){
+                            echo "WE ARE IN HERE";
+                        foreach($userHobbies as $hobby){
+                
+                            $result = $this->scrape($hobby);
+                            $content = $result->getContent();
+                            $data = json_decode($content, true);
+                            $arrayLength = count($data["data"]);
+                            if($arrayLength > 0){
+                                $allFoundGifts->append($data["data"]);
+                            }
+                    };
                     return response()->json([
                         "status" => "Success",
                         "data" => $allFoundGifts,
@@ -367,7 +414,7 @@ class WebscrapperController extends Controller
                     return null;
                 };
                 
-        
+            };
         } catch (Exception $e) {
             return response()->json([
                 "status" => "An Error Occurred",
