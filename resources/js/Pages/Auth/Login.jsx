@@ -60,7 +60,7 @@ export default function Login({ status, canResetPassword }) {
                     <InputLabel
                         htmlFor="password"
                         value="Your Password"
-                        className="text-center md:text-center sm:text-center text-4xl block w-full font-baskerville"
+                        className="text-4xl text-center md:text-center sm:text-center block w-full font-baskerville"
                     />
 
                     <TextInput
