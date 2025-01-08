@@ -31,12 +31,10 @@ export default function Login({ status, canResetPassword }) {
                 </div>
             )}
 
-            {/* Login heading */}
             <div className="w-11/12 md:w-1/2 mx-auto">
                 <h1 className="font-baskerville text-4xl mb-8">Login</h1>
             </div>
 
-            {/* Email field */}
             <form onSubmit={submit}>
                 <div className="mt-2 space-y-2">
                     <InputLabel
@@ -58,7 +56,6 @@ export default function Login({ status, canResetPassword }) {
 
                     <InputError message={errors.email} className="mt-2" />
                 </div>
-                {/* Password field */}
                 <div className="mt-4 space-y-2">
                     <InputLabel
                         htmlFor="password"
@@ -79,7 +76,6 @@ export default function Login({ status, canResetPassword }) {
                     <InputError message={errors.password} className="mt-2" />
                 </div>
 
-                {/* Log in Button */}
                 <div className="w-11/12 md:w-3/4 mx-auto mt-20">
                     <div className="flex justify-center md:justify-start md:ml-32">
                         <PrimaryButton className="font-baskerville normal-case text-xl tracking-normal w-full md:w-1/4 flex justify-center items-center" disabled={processing}>
@@ -87,7 +83,6 @@ export default function Login({ status, canResetPassword }) {
                         </PrimaryButton>
                     </div>
 
-                    {/* Don't have an account link */}
                     <div className="mt-6 flex justify-center w-full">
                         {canResetPassword && (
                             <Link
