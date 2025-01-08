@@ -40,7 +40,7 @@ export default function Login({ status, canResetPassword }) {
                     <InputLabel
                         htmlFor="email"
                         value="Your Email"
-                        className="text-center md:text-center sm:text-center text-3xl block w-full font-baskerville"
+                        className="text-center md:text-center sm:text-center text-4xl block w-full font-baskerville"
                     />
 
                     <TextInput
@@ -60,7 +60,7 @@ export default function Login({ status, canResetPassword }) {
                     <InputLabel
                         htmlFor="password"
                         value="Your Password"
-                        className="text-center md:text-center sm:text-center text-3xl block w-full font-baskerville"
+                        className="text-center md:text-center sm:text-center text-4xl block w-full font-baskerville"
                     />
 
                     <TextInput
