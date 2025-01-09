@@ -16,11 +16,14 @@ class HobbyController extends Controller
         $validated = $request->validate([
             "hobby_name" => "required", "string"
         ]);
-
-        return Hobby::create([
+//        dd('hi');
+        Hobby::create([
             "hobby_name" => $validated['hobby_name'],
             "user_id" => $request->user()->id,
         ]);
+//        dd(auth()->user()->hobbies->pluck('hobby_name'));
+        $hobbies = auth()->user()->hobbies->pluck('hobby_name');
+        Inertia::render('/Hobbies',['hobbies' => $hobbies]);
 
     }
 

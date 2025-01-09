@@ -11,12 +11,8 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('hobbies', function (Blueprint $table) {
-            $table->id();
-            $table->foreignId('user_id')->constrained('users');
-            $table->string('hobby_name');
-            $table->timestamps();
-
+        Schema::table('hobbies', function (Blueprint $table) {
+            $table->unique(['user_id','hobby_name']);
         });
     }
 
@@ -25,6 +21,8 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('hobbies');
+        Schema::table('hobbies', function (Blueprint $table) {
+            $table->dropUnique(['user_id','hobby_name']);
+        });
     }
 };
