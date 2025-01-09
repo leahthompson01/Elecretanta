@@ -51,12 +51,12 @@ class WebscrapperController extends Controller
                         'verify' => false, // Disable SSL verification
                     ]);
 
-
+                    
                     
                     // fetching html doc using client
                     $response = $client->get('');
                     $body = $response->getBody()->getContents();
-                    
+                  
                     // Initialize DomCrawler and passing current html doc into it so we can start searching for data
                     $crawler = new Crawler($body);
 

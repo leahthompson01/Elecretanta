@@ -2,10 +2,12 @@ import { Link } from "@inertiajs/react";
 import { useState } from "react";
 import { usePage } from "@inertiajs/react";
 
-
 export default function NavBar() {
     const [showingNavigationDropdown, setShowingNavigationDropdown] =
         useState(false);
+
+    const user = usePage().props.auth.user;
+        
     const user = usePage().props.auth.user;
     console.log(user);
 
@@ -20,17 +22,25 @@ export default function NavBar() {
             <div className="hidden sm:flex gap-4 items-center">
                 <Link href="/">Home</Link>
                 <Link href="/about">About</Link>
-                {user ? (
 
-                    <Link href="/Auth/logout">Log Out</Link>
-                    ) : (
-                    <Link
-                        href="/login"
-                        className="bg-secondary text-white px-4 py-2 rounded-full"
-                    >
-                        Login
-                    </Link>
-                )}
+                {user?
+                
+                <Link
+                className="bg-secondary text-white px-4 py-2 rounded-full"
+                                method="post"
+                                href={route('logout')}
+                                as="button"
+                            >
+                                Log Out
+                </Link>
+                :
+                <Link
+                href="/login"
+                className="bg-secondary text-white px-4 py-2 rounded-full"
+            >
+                Login
+            </Link>
+                }
             </div>
 
             {/* Mobile Navigation Button */}
