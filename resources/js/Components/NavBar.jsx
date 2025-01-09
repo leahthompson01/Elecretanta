@@ -8,7 +8,6 @@ export default function NavBar() {
 
     const user = usePage().props.auth.user;
         
-    const user = usePage().props.auth.user;
     console.log(user);
 
     return (

@@ -23,16 +23,6 @@ class WebscrapperController extends Controller
             'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/114.0.5735.110 Safari/537.36',
             'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101 Firefox/102.0',
             'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/115.0.5790.170 Safari/537.36 Edg/115.0.1901.203',
-            'Mozilla/5.0 (Macintosh; Intel Mac OS X 11_0) AppleWebKit/537.36 (KHTML, like Gecko) Version/14.0 Safari/537.36',
-            'Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:91.0) Gecko/20100101 Firefox/91.0',
-            'Mozilla/5.0 (Linux; Android 12; Pixel 5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/114.0.5735.110 Mobile Safari/537.36',
-            'Mozilla/5.0 (Android 12; Mobile; rv:91.0) Gecko/91.0 Firefox/91.0',
-            'Mozilla/5.0 (iPhone; CPU iPhone OS 15_0 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/15.0 Mobile/15E148 Safari/604.1',
-            'Mozilla/5.0 (iPhone; CPU iPhone OS 15_0 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) CriOS/91.0.4472.124 Mobile/15E148 Safari/604.1',
-            'Mozilla/5.0 (Linux; Android 11; Pixel 3) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/96.0.4664.45 Mobile Safari/537.36 OPR/60.3.3004.55482',
-            'Mozilla/5.0 (Windows NT 10.0; Win64; x64; Trident/7.0; rv:11.0) like Gecko',
-            'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/96.0.4664.45 Safari/537.36 OPR/82.0.4227.43',
-            'Mozilla/5.0 (Linux; U; Android 10; en-US; SM-A505F Build/QP1A.190711.020) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 UCBrowser/13.3.8.1305 Mobile Safari/537.36'
         ];
         
         $randomUserAgent = $userAgents[array_rand($userAgents)];
@@ -56,7 +46,7 @@ class WebscrapperController extends Controller
                     // fetching html doc using client
                     $response = $client->get('');
                     $body = $response->getBody()->getContents();
-                  
+           
                     // Initialize DomCrawler and passing current html doc into it so we can start searching for data
                     $crawler = new Crawler($body);
 
@@ -259,11 +249,11 @@ class WebscrapperController extends Controller
                     $response = Prism::text()
                     ->using(Provider::Gemini, "gemini-1.5-flash")
                     ->withPrompt(
-                       "I am looking to gift an age appropriate gift for a 20 year old with a budget less than $150, and the person has the following interests: hiking, running, sleeping, eating, tv, nascar. Please provide only a valid JSON array without any additional text or wrapping elements like code block markers or comments. Must contain 3 unique gift ideas. The JSON should only include the data in array form with objects containing the keys `item` Do not add anything else.\n\nFor example:\n\n[\n    {\n        \"item\": \"Gift card for streaming service (Netflix etc.)\",\n        \"reason\": \"Appeals to their interest in TV shows and Netflix, and is easily adjustable to their budget.\"\n    },\n    {\n        \"item\": \"Sports-themed socks or small accessory\",\n        \"reason\": \"Relatively inexpensive and caters to their interest in sports.\"\n    }\n]"
+                       "I am looking to gift an age appropriate gift for a 20 year old with a budget less than $150, and the person has the following interests: videogames, cleaning, music, drinking wine. Please provide only a valid JSON array without any additional text or wrapping elements like code block markers or comments. Must contain 3 unique gift ideas. The JSON should only include the data in array form with objects containing the keys `item`, and url, an image url of what these gift ideas look like. LINK MUST CONTAIN AT LEAST PART OF THE ITEM NAME TO ENSURE ITS A VALID LINK. The gifts must be from either, walmart.com, Amazon, or Target. Also include a field that is just the store name with the key store. Do not add anything else.\n\nFor example:\n\n[\n    {\n        \"item\": \"Gift card for streaming service (Netflix etc.)\",\n        \"reason\": \"Appeals to their interest in TV shows and Netflix, and is easily adjustable to their budget.\"\n    },\n    {\n        \"item\": \"Sports-themed socks or small accessory\",\n        \"reason\": \"Relatively inexpensive and caters to their interest in sports.\"\n    }\n]"
                     )->generate();
 
                     $responseText = $response->text;
-       
+                    
                     $parsedResponse = str_replace("`", "", $responseText );
                     $parsedResponse = preg_replace('/^json\s*/', '', $parsedResponse);
                 
@@ -322,10 +312,17 @@ class WebscrapperController extends Controller
                 
                 }
             }
+        }   
+ 
+        if (count($allFoundGifts) < 1){
+            $allFoundGifts = $geminiGiftSuggestions;
+            $responseMessage = "Falied";
+        } else {
+            $responseMessage = "Success";
         }
         
         return response()->json([
-            'message' => 'Success',
+            'message' => $responseMessage,
             "data" => $allFoundGifts
         ], 200);
         } catch (Exception $e) {
