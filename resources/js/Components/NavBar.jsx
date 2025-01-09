@@ -2,6 +2,7 @@ import { Link } from "@inertiajs/react";
 import { useState } from "react";
 import { usePage } from "@inertiajs/react";
 
+
 export default function NavBar() {
     const [showingNavigationDropdown, setShowingNavigationDropdown] =
         useState(false);
@@ -33,7 +34,25 @@ export default function NavBar() {
                                 Log Out
                 </Link>
                 :
+
+                {user?
+                
                 <Link
+                className="bg-secondary text-white px-4 py-2 rounded-full"
+                                method="post"
+                                href={route('logout')}
+                                as="button"
+                            >
+                                Log Out
+                </Link>
+                :
+                <Link
+                href="/login"
+                className="bg-secondary text-white px-4 py-2 rounded-full"
+            >
+                Login
+            </Link>
+                }
                 href="/login"
                 className="bg-secondary text-white px-4 py-2 rounded-full"
             >
