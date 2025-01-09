@@ -11,6 +11,7 @@ use EchoLabs\Prism\Enums\Provider;
 use EchoLabs\Prism\ValueObjects\Messages\UserMessage;
 use EchoLabs\Prism\ValueObjects\Messages\Support\Image;
 use EchoLabs\Prism\Exceptions\PrismException;
+use App\Models\User;
 use ArrayObject;
 
 class WebscrapperController extends Controller
@@ -236,8 +237,10 @@ class WebscrapperController extends Controller
     
 
     public function generateGiftIdeas(Request $request){
-            // $userHobbies = auth()->user()->hobbies();
-
+        $userId = $request->user_id;
+        
+        $foundUser = User::find($userId);
+        
         try {
             
             $allFoundGifts = new ArrayObject();
@@ -313,7 +316,7 @@ class WebscrapperController extends Controller
                 }
             }
         }   
- 
+        $allFoundGifts = [];
         if (count($allFoundGifts) < 1){
             $allFoundGifts = $geminiGiftSuggestions;
             $responseMessage = "Falied";

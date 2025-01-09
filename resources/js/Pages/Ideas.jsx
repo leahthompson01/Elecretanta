@@ -19,7 +19,7 @@ export default function Ideas() {
                     {    method: 'POST',
                         headers: {
                         'Content-Type': 'application/json'
-                },       body: JSON.stringify(user.id)// Specify the content type
+                },       body: JSON.stringify({user_id: user.id })// Specify the content type
             })
                 const jsonData = await response.json();
                 if (jsonData && typeof jsonData === "object") {
