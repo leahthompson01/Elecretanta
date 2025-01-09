@@ -9,7 +9,7 @@ export default function NavBar() {
     const user = usePage().props.auth.user;
 
     return (
-        <nav className="bg-muted rounded-full flex justify-between items-center p-4 relative mb-12">
+        <nav className="bg-muted rounded flex justify-between items-center p-4 relative mb-12">
             <p className="text-5xl">
                 <Link href="/">🎄</Link>
             </p>
@@ -24,7 +24,7 @@ export default function NavBar() {
                         <Link href="/dashboard">Dashboard</Link>
 
                         <Link
-                            className="bg-secondary text-white px-4 py-2 rounded-full"
+                            className="bg-secondary text-white px-4 py-2 rounded"
                             method="post"
                             href={route("logout")}
                             as="button"
@@ -35,7 +35,7 @@ export default function NavBar() {
                 ) : (
                     <Link
                         href="/login"
-                        className="bg-secondary text-white px-4 py-2 rounded-full"
+                        className="bg-secondary text-white px-4 py-2 rounded"
                     >
                         Login
                     </Link>
@@ -96,7 +96,7 @@ export default function NavBar() {
                     {/* Close Button */}
                     <button
                         onClick={() => setShowingNavigationDropdown(false)}
-                        className="absolute top-4 right-4 p-2 rounded-full hover:bg-muted-foreground/10 transition-colors"
+                        className="absolute top-4 right-4 p-2 rounded hover:bg-muted-foreground/10 transition-colors"
                         aria-label="Close menu"
                     >
                         <svg
@@ -130,7 +130,7 @@ export default function NavBar() {
                                 </Link>
 
                                 <Link
-                                    className="bg-secondary text-white px-4 py-2 rounded-full"
+                                    className="bg-secondary text-white px-4 py-2 rounded"
                                     method="post"
                                     href={route("logout")}
                                     as="button"
@@ -141,7 +141,7 @@ export default function NavBar() {
                         ) : (
                             <Link
                                 href="/login"
-                                className="bg-secondary text-white px-4 py-2 rounded-full"
+                                className="bg-secondary text-white px-4 py-2 rounded"
                             >
                                 Login
                             </Link>

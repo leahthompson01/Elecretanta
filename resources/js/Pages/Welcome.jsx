@@ -35,7 +35,7 @@ export default function Welcome({ auth, laravelVersion, phpVersion }) {
 
                                 <Link
                                     href="/login"
-                                    className="font-[24px] font-semibold text-center w-full bg-primary text-white px-4 py-2 rounded-full sm:w-auto"
+                                    className="font-[24px] font-semibold text-center w-full bg-primary text-white px-4 py-2 rounded sm:w-auto"
                                 >
                                     Exchange Gifts Here!
                                 </Link>
@@ -74,7 +74,7 @@ export default function Welcome({ auth, laravelVersion, phpVersion }) {
 
                                 <Link
                                     href="/login"
-                                    className="font-[24px] font-semibold text-center w-full bg-primary text-white px-4 py-2 rounded-full"
+                                    className="font-[24px] font-semibold text-center w-full bg-primary text-white px-4 py-2 rounded"
                                 >
                                     Exchange Gifts Here!
                                 </Link>
