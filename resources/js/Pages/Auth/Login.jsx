@@ -40,7 +40,7 @@ export default function Login({ status, canResetPassword }) {
                     <InputLabel
                         htmlFor="email"
                         value="Your Email"
-                        className="text-center md:text-center sm:text-center text-4xl block w-full font-baskerville"
+                        className="text-center text-4xl block w-full font-baskerville"
                     />
 
                     <TextInput
@@ -60,7 +60,7 @@ export default function Login({ status, canResetPassword }) {
                     <InputLabel
                         htmlFor="password"
                         value="Your Password"
-                        className="text-4xl text-center md:text-center sm:text-center block w-full font-baskerville"
+                        className="text-4xl text-center block w-full font-baskerville"
                     />
 
                     <TextInput
@@ -76,9 +76,12 @@ export default function Login({ status, canResetPassword }) {
                     <InputError message={errors.password} className="mt-2" />
                 </div>
 
-                <div className="w-11/12 md:w-3/4 mx-auto mt-20">
+                <div className="w-full md:w-3/4 mx-auto mt-20">
                     <div className="flex justify-center md:justify-start md:ml-32">
-                        <PrimaryButton className="font-baskerville normal-case text-xl tracking-normal w-full md:w-1/4 flex justify-center items-center" disabled={processing}>
+                        <PrimaryButton
+                            className="font-baskerville normal-case text-xl tracking-normal w-full md:w-1/4 flex justify-center items-center"
+                            disabled={processing}
+                        >
                             Login
                         </PrimaryButton>
                     </div>
@@ -86,7 +89,7 @@ export default function Login({ status, canResetPassword }) {
                     <div className="mt-6 flex justify-center w-full">
                         {canResetPassword && (
                             <Link
-                                href={route("password.request")}
+                                href={route("register")}
                                 className="text-xl md:text-2xl text-gray-600 hover:text-gray-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
                             >
                                 Don't have an account?{" "}
