@@ -56,6 +56,7 @@ export default function Login({ status, canResetPassword }) {
 
                     <InputError message={errors.email} className="mt-2" />
                 </div>
+
                 <div className="mt-4 space-y-2">
                     <InputLabel
                         htmlFor="password"
@@ -76,27 +77,29 @@ export default function Login({ status, canResetPassword }) {
                     <InputError message={errors.password} className="mt-2" />
                 </div>
 
-                <div className="w-full md:w-3/4 mx-auto mt-20">
-                    <div className="flex justify-center md:justify-start md:ml-32">
-                        <PrimaryButton
-                            className="font-baskerville normal-case text-xl tracking-normal w-full md:w-1/4 flex justify-center items-center"
-                            disabled={processing}
-                        >
-                            Login
-                        </PrimaryButton>
-                    </div>
-
-                    <div className="mt-6 flex justify-center w-full">
-                        {canResetPassword && (
-                            <Link
-                                href={route("register")}
-                                className="text-xl md:text-2xl text-gray-600 hover:text-gray-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+                <div className="w-11/12 md:w-1/2 mx-auto mt-20">
+                    <div className="w-full md:w-full mx-auto">
+                        <div className="flex justify-center md:justify-start">
+                            <PrimaryButton
+                                className="font-baskerville normal-case text-xl tracking-normal w-full md:w-1/4 flex justify-center items-center"
+                                disabled={processing}
                             >
-                                Don't have an account?{" "}
-                                <span className="underline">Sign up here.</span>
-                            </Link>
-                        )}
+                                Login
+                            </PrimaryButton>
+                        </div>
                     </div>
+                </div>
+
+                <div className="flex justify-center w-full mt-6">
+                    {canResetPassword && (
+                        <Link
+                            href={route("register")}
+                            className="text-xl md:text-2xl text-gray-600 hover:text-gray-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+                        >
+                            Don't have an account?{" "}
+                            <span className="underline">Sign up here.</span>
+                        </Link>
+                    )}
                 </div>
             </form>
         </GuestLayout>
