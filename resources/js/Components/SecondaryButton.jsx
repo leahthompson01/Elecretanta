@@ -12,7 +12,7 @@ export default function SecondaryButton({
             {...props}
             type={type}
             className={twMerge(
-                `flex items-center rounded-full bg-secondary px-2 py-1 text-sm font-medium text-secondary-foreground sm:w-full ${
+                `flex items-center rounded bg-secondary px-2 py-1 text-sm font-medium text-secondary-foreground sm:w-full ${
                     disabled && "opacity-25"
                 } ${className}`
             )}
