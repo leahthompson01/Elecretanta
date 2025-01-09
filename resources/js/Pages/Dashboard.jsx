@@ -13,7 +13,7 @@ export default function Dashboard() {
         {
             image: gift,
             title: "gift exchanges",
-            link: "/gift-exchange",
+            link: "/giftExchange",
         },
         {
             image: heart,
