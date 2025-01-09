@@ -9,7 +9,6 @@ export default function Hobbies(props){
        hobby_name: ''
     });
     function submit(e) {
-        console.log('you have tried to submit the form', data);
         e.preventDefault();
         if(!userHobbies.includes(data.hobby_name)) {
             post(route('hobby.store'));
@@ -17,7 +16,7 @@ export default function Hobbies(props){
             destroy(route('hobby.delete', {'hobby': props.totalList[userHobbies.indexOf(data.hobby_name)]}));
         }
     }
-    console.log('hi', userHobbies)
+
     return(
         <AuthenticatedLayout
             header={
