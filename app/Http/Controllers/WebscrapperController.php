@@ -240,7 +240,7 @@ class WebscrapperController extends Controller
         $userId = $request->user_id;
         
         $foundUser = User::find($userId);
-        
+
         try {
             
             $allFoundGifts = new ArrayObject();
@@ -316,7 +316,7 @@ class WebscrapperController extends Controller
                 }
             }
         }   
-        $allFoundGifts = [];
+        // $allFoundGifts = [];
         if (count($allFoundGifts) < 1){
             $allFoundGifts = $geminiGiftSuggestions;
             $responseMessage = "Falied";

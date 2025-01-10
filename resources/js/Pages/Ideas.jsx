@@ -8,9 +8,6 @@ export default function Ideas() {
     const user = usePage().props.auth.user;
     const [giftIdeas, setGiftIdeas] = useState([]);
     const [isLoading, setIsLoading] = useState(true);
-    const userhobby = user.hobby_name;
-    console.log("This is the user:", user);
-
     useEffect(() => {
         const fetchData = async () => {
             setIsLoading(true);
