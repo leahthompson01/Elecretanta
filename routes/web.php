@@ -24,7 +24,7 @@ Route::middleware('auth')->group(function () {
 
 Route::middleware(['auth', 'verified'])->group(function () {
    Route::get('/hobby', function () {
-       $hobbies = auth()->user()->hobbies->pluck('hobby_name');
+       $hobbies = auth()->user()->hobbies->pluck('hobby_name') ?? [];
        return Inertia::render('Hobbies', ['hobbies' => $hobbies,'totalList' => auth()->user()->hobbies]);
    })->name('hobby.index');
 
@@ -37,7 +37,7 @@ Route::get('/dashboard', function () {
 })->middleware(['auth', 'verified'])->name('dashboard');
 
 Route::get('/ideas', function () {
-    return Inertia::render('Ideas');
+    return Inertia::render('Ideas', ['hobbies' => auth()->user()->hobbies->pluck('hobby_name') ?? []]);
 })->middleware(['auth', 'verified'])->name('ideas');
 
 Route::middleware('auth')->group(function () {

@@ -2,16 +2,13 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class ExchangeGroup extends Model
 {
-    /** @use HasFactory<\Database\Factories\GroupFactory> */
-    use HasFactory;
     protected $table = 'exchange_groups';
     protected $fillable = ["name", "budget", 'exchangeDate'];
-    
+
     public $incrementing = true;
 
     public $timestamps = true;

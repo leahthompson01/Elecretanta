@@ -22,8 +22,6 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
-        'age',
-        'hobbies'
     ];
 
     /**
@@ -36,9 +34,9 @@ class User extends Authenticatable
         'remember_token',
     ];
 
-    public function hobbies()
+    public function hobbies(): HasMany
     {
-        return $this->belongsToMany(Hobby::class);
+        return $this->HasMany(Hobby::class);
     }
 
     /**
@@ -51,9 +49,8 @@ class User extends Authenticatable
         return [
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
-            'age'=> 'integer'
         ];
     }
 
-    
+
 }
