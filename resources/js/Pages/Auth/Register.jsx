@@ -142,8 +142,6 @@ export default function Register() {
                         Already have an account?{" "}
                         <span className="underline">Login here.</span>
                     </Link>
-
-
                 </div>
             </form>
         </GuestLayout>
