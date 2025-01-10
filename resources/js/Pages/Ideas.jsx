@@ -9,7 +9,7 @@ import target from "../../assets/target.png";
 import placeholder from "../../assets/placeholder.jpg";
 
 export default function Ideas(props) {
-    const hobbies = props['hobbies'];
+    const hobbies = props["hobbies"];
     console.log(hobbies);
     const user = usePage().props.auth.user;
     const [giftIdeas, setGiftIdeas] = useState([]);
@@ -26,7 +26,7 @@ export default function Ideas(props) {
         try {
             const response = await fetch("/api/generateGiftIdeas");
             const data = await response.json();
-            console.log("jsonData:", data);
+
             if (!response.ok) {
                 throw new Error(data.message || "Failed to fetch gift ideas");
             }
