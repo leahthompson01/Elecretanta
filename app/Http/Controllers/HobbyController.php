@@ -38,3 +38,4 @@ class HobbyController extends Controller
         $hobby->delete();
     }
 }
+
