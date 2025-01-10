@@ -97,7 +97,7 @@ export default function Register() {
                         className="mt-2 text-center" />
                 </div>
 
-                <div className="mt-4">
+                {/* <div className="mt-4">
                     <InputLabel
                         htmlFor="password_confirmation"
                         value="Confirm Password"
@@ -121,7 +121,7 @@ export default function Register() {
                         message={errors.password_confirmation}
                         className="mt-2 text-center"
                     />
-                </div>
+                </div> */}
                 <div className="w-11/12 md:w-1/2 mx-auto mt-10">
                     <div className="w-full md:w-full mx-auto">
                         <div className="flex justify-center md:justify-start">
