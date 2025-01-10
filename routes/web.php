@@ -24,7 +24,8 @@ Route::middleware('auth')->group(function () {
 
 Route::middleware(['auth', 'verified'])->group(function () {
    Route::get('/hobby', function () {
-    return Inertia::render('Hobby', ['hobbies' => HobbyController::class, 'index']);
+       $hobbies = auth()->user()->hobbies->pluck('hobby_name') ?? [];
+       return Inertia::render('Hobbies', ['hobbies' => $hobbies,'totalList' => auth()->user()->hobbies]);
    })->name('hobby.index');
 
    Route::post('/hobby', [HobbyController::class, 'store'])->name('hobby.store');
@@ -34,6 +35,10 @@ Route::middleware(['auth', 'verified'])->group(function () {
 Route::get('/dashboard', function () {
     return Inertia::render('Dashboard');
 })->middleware(['auth', 'verified'])->name('dashboard');
+
+Route::get('/ideas', function () {
+    return Inertia::render('Ideas', ['hobbies' => auth()->user()->hobbies->pluck('hobby_name') ?? []]);
+})->middleware(['auth', 'verified'])->name('ideas');
 
 Route::middleware('auth')->group(function () {
     Route::get('/santaGroup', [SantaGroupController::class, 'index'])->name('santaGroup.index');
