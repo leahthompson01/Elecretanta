@@ -5,8 +5,7 @@ import { usePage } from "@inertiajs/react";
 export default function NavBar() {
     const [showingNavigationDropdown, setShowingNavigationDropdown] =
         useState(false);
-
-    const user = usePage().props.auth.user;
+    const user = usePage().props.auth.user; 
 
     return (
         <nav className="bg-muted rounded flex justify-between items-center p-4 relative mb-12">

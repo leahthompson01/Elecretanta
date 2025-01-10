@@ -34,6 +34,11 @@ class User extends Authenticatable
         'remember_token',
     ];
 
+    public function hobbies(): HasMany
+    {
+        return $this->HasMany(Hobby::class);
+    }
+
     /**
      * Get the attributes that should be cast.
      *
@@ -47,8 +52,5 @@ class User extends Authenticatable
         ];
     }
 
-    public function hobbies(): HasMany
-    {
-        return $this->HasMany(Hobby::class);
-    }
+
 }
