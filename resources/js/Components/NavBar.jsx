@@ -6,36 +6,37 @@ export default function NavBar() {
     const [showingNavigationDropdown, setShowingNavigationDropdown] =
         useState(false);
     const user = usePage().props.auth.user; 
+
     return (
-        <nav className="bg-muted rounded-full flex justify-between items-center p-4 relative mb-12">
+        <nav className="bg-muted rounded flex justify-between items-center p-4 relative mb-12">
             <p className="text-5xl">
                 <Link href="/">🎄</Link>
             </p>
-            <h1>Secret Santa</h1>
-
-            {/* Desktop Navigation */}
+            <h1 className="text-center sm:text-left ml-4 sm:ml-30 pl-2 sm:pl-20">Secret Santa</h1>
             <div className="hidden sm:flex gap-4 items-center">
                 <Link href="/">Home</Link>
-                <Link href="/about">About</Link>
 
-                {user?
-                
-                <Link
-                className="bg-secondary text-white px-4 py-2 rounded-full"
-                                method="post"
-                                href={route('logout')}
-                                as="button"
-                            >
-                                Log Out
-                </Link>
-                :
-                <Link
-                href="/login"
-                className="bg-secondary text-white px-4 py-2 rounded-full"
-            >
-                Login
-            </Link>
-                }
+                {user ? (
+                    <>
+                        <Link href="/dashboard">Dashboard</Link>
+
+                        <Link
+                            className="bg-secondary text-white px-4 py-2 rounded"
+                            method="post"
+                            href={route("logout")}
+                            as="button"
+                        >
+                            Log Out
+                        </Link>
+                    </>
+                ) : (
+                    <Link
+                        href="/login"
+                        className="bg-secondary text-white px-4 py-2 rounded"
+                    >
+                        Login
+                    </Link>
+                )}
             </div>
 
             {/* Mobile Navigation Button */}
@@ -82,17 +83,16 @@ export default function NavBar() {
 
             {/* Mobile Navigation Menu */}
             <div
-                className={`fixed top-0 right-0 bottom-0 w-64 bg-muted shadow-lg transform transition-transform duration-300 ease-in-out z-50 ${
-                    showingNavigationDropdown
-                        ? "translate-x-0"
-                        : "translate-x-full"
-                } sm:hidden`}
+                className={`fixed top-0 right-0 bottom-0 w-64 bg-muted shadow-lg transform transition-transform duration-300 ease-in-out z-50 ${showingNavigationDropdown
+                    ? "translate-x-0"
+                    : "translate-x-full"
+                    } sm:hidden`}
             >
                 <div className="px-4 py-6">
                     {/* Close Button */}
                     <button
                         onClick={() => setShowingNavigationDropdown(false)}
-                        className="absolute top-4 right-4 p-2 rounded-full hover:bg-muted-foreground/10 transition-colors"
+                        className="absolute top-4 right-4 p-2 rounded hover:bg-muted-foreground/10 transition-colors"
                         aria-label="Close menu"
                     >
                         <svg
@@ -111,30 +111,37 @@ export default function NavBar() {
                     </button>
 
                     {/* Menu Items */}
-                    <div className="space-y-4 mt-8">
+                    <div className="space-y-4 mt-12 grid">
                         <Link
                             href="/"
-                            className="block px-4 py-2 text-foreground hover:bg-muted-foreground/10 rounded-md"
+                            className="block py-4 text-foreground hover:bg-muted-foreground/10 rounded-md"
                         >
                             Home
                         </Link>
-                        <Link
-                            href="/about"
-                            className="block px-4 py-2 text-foreground hover:bg-muted-foreground/10 rounded-md"
-                        >
-                            About
-                        </Link>
-                        {user ? (
-                    <button>Log Out</button>
-                    ) : (
-                    <Link
-                        href="/login"
-                        className="bg-secondary text-white px-4 py-2 rounded-full"
-                    >
-                        Login
-                    </Link>
-                )}
 
+                        {user ? (
+                            <>
+                                <Link href="/dashboard" className="py-4">
+                                    Dashboard
+                                </Link>
+
+                                <Link
+                                    className="bg-secondary text-white px-4 py-2 rounded"
+                                    method="post"
+                                    href={route("logout")}
+                                    as="button"
+                                >
+                                    Log Out
+                                </Link>
+                            </>
+                        ) : (
+                            <Link
+                                href="/login"
+                                className="bg-secondary text-white px-4 py-2 rounded"
+                            >
+                                Login
+                            </Link>
+                        )}
                     </div>
                 </div>
             </div>

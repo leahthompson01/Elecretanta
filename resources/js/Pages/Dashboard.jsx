@@ -13,12 +13,12 @@ export default function Dashboard() {
         {
             image: gift,
             title: "gift exchanges",
-            link: "/gift-exchange",
+            link: "/giftExchange",
         },
         {
             image: heart,
             title: "hobbies",
-            link: "/hobbies",
+            link: "/hobby",
         },
         {
             image: lightbulb,
