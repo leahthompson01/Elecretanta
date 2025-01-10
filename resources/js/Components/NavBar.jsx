@@ -5,14 +5,16 @@ import { usePage } from "@inertiajs/react";
 export default function NavBar() {
     const [showingNavigationDropdown, setShowingNavigationDropdown] =
         useState(false);
-    const user = usePage().props.auth.user; 
+    const user = usePage().props.auth.user;
 
     return (
         <nav className="bg-muted rounded flex justify-between items-center p-4 relative mb-12">
             <p className="text-5xl">
                 <Link href="/">🎄</Link>
             </p>
-            <h1 className="text-center sm:text-left ml-4 sm:ml-30 pl-2 sm:pl-20">Secret Santa</h1>
+            <h1 className="text-center sm:text-left ml-4 sm:ml-30 pl-2 sm:pl-20">
+                <Link href="/">Secret Santa</Link>
+            </h1>
             <div className="hidden sm:flex gap-4 items-center">
                 <Link href="/">Home</Link>
 
